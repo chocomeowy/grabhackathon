@@ -458,14 +458,14 @@ export default function Sidebar({
                          )}
                        </div>
                     </div>
-                  </div>
-                )}
-              </motion.div>
-            </>
-          )}
-        </AnimatePresence>
-      </div>
+                </div>
+              )}
+            </motion.div>
+          </AnimatePresence>
+        </>
+      )}
     </div>
+  </div>
 
       </motion.aside>
 

@@ -5,22 +5,22 @@ import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { MapPin, AlertCircle, RefreshCw, Layers, ShieldAlert } from 'lucide-react';
 
-// Robust Raster Fallback (No vector complexity, no fonts to fail)
+// OneMap Singapore Raster (Official Authority Map)
 const FALLBACK_STYLE = {
   version: 8,
   sources: {
-    'osm': {
+    'onemap': {
       type: 'raster',
-      tiles: ['https://a.tile.openstreetmap.org/{z}/{x}/{y}.png'],
+      tiles: ['https://maps-a.onemap.sg/v3/Default/{z}/{x}/{y}.png'],
       tileSize: 256,
-      attribution: '&copy; OpenStreetMap contributors'
+      attribution: '<img src="https://www.onemap.gov.sg/docs/maps/images/oneMap64.png" style="height:20px;width:20px;"/> OneMap Singapore'
     }
   },
   layers: [
     {
-      id: 'osm',
+      id: 'onemap',
       type: 'raster',
-      source: 'osm',
+      source: 'onemap',
       minzoom: 0,
       maxzoom: 19
     }

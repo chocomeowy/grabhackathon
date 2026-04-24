@@ -300,14 +300,35 @@ function POICard({ poi, isExpanded, onClick }: { poi: any, isExpanded: boolean, 
       onClick={onClick}
       className={`glass-card p-6 group cursor-pointer border-l-4 transition-all ${isExpanded ? 'border-primary bg-white/[0.07] ring-1 ring-white/10 shadow-2xl' : 'border-transparent'}`}
     >
-      <div className="flex justify-between items-start mb-4">
-        <div className="space-y-1">
-          <h4 className="text-base font-black text-white group-hover:text-primary transition-colors leading-tight">{poi.name}</h4>
-          <p className="text-[10px] font-bold text-muted-foreground truncate max-w-[260px]">{poi.formatted_address}</p>
+      <div className="flex gap-4 items-start mb-4">
+        {/* Optional Image Thumbnail */}
+        {poi.photo_url && (
+          <div className="w-20 h-20 rounded-xl overflow-hidden shrink-0 border border-white/10">
+            <img src={poi.photo_url} alt={poi.name} className="w-full h-full object-cover" />
+          </div>
+        )}
+        <div className="flex-1 min-w-0 space-y-1">
+          <div className="flex items-center gap-2">
+            <h4 className="text-base font-black text-white group-hover:text-primary transition-colors leading-tight truncate">{poi.name}</h4>
+            {poi.rating && (
+              <div className="flex items-center gap-0.5 px-1.5 py-0.5 bg-amber-500/20 rounded-md">
+                <Star className="w-2.5 h-2.5 text-amber-500 fill-current" />
+                <span className="text-[9px] font-black text-amber-500">{poi.rating}</span>
+              </div>
+            )}
+          </div>
+          <p className="text-[10px] font-bold text-muted-foreground truncate">{poi.formatted_address}</p>
+          <div className="flex flex-wrap gap-1 mt-2">
+             {poi.categories?.slice(0, 2).map((c: any) => (
+               <span key={c.name} className="px-1.5 py-0.5 bg-white/5 rounded-md text-[7px] font-black text-white/40 uppercase">{c.name}</span>
+             ))}
+          </div>
         </div>
-        <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-primary/10 rounded-xl shrink-0">
-           <Zap className="w-3.5 h-3.5 text-primary fill-current" />
-           <span className="text-[11px] font-black text-primary">{poi.vibe_score}%</span>
+        <div className="flex flex-col items-end gap-1 shrink-0">
+          <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-primary/10 rounded-xl">
+             <Zap className="w-3.5 h-3.5 text-primary fill-current" />
+             <span className="text-[11px] font-black text-primary">{poi.vibe_score}%</span>
+          </div>
         </div>
       </div>
 
@@ -319,6 +340,16 @@ function POICard({ poi, isExpanded, onClick }: { poi: any, isExpanded: boolean, 
             exit={{ opacity: 0, height: 0 }}
             className="pt-6 space-y-6 border-t border-white/10 mt-4"
           >
+            {/* HERO IMAGE FOR EXPANDED VIEW */}
+            {poi.photo_url && (
+              <div className="w-full h-40 rounded-2xl overflow-hidden border border-white/10 relative">
+                 <img src={poi.photo_url} alt={poi.name} className="w-full h-full object-cover" />
+                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-4">
+                    <span className="text-[10px] font-black text-white uppercase tracking-widest">Verified Intelligence</span>
+                 </div>
+              </div>
+            )}
+
             <div className="space-y-2">
               <span className="text-[8px] font-black text-primary uppercase tracking-[0.3em]">Vibe Intel</span>
               <p className="text-xs text-white/80 font-medium leading-relaxed italic">"{poi.desc}"</p>

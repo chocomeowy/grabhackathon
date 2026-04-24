@@ -18,10 +18,11 @@ Navigation apps are built for *destinations*. But what if you don't have one? Wh
 *   **Vibe-to-POI Mapping**: Natural language search mapped to Grab POI categories via AI logic.
 *   **Vibe Templates**: Quick-discovery buttons for *"Local Food"*, *"Trending Events"*, and *"Chill Cafes"* to eliminate search friction.
 
-### 📊 Neighbourhood Pulse
-*   **Hot Events Section**: Real-time discovery of localized events (e.g., *Midnight Hawker Festival*) unique to the target area.
-*   **Interactive Intel Cards**: Click to reveal **"Vibe Intel"**—AI-generated narratives explaining why a spot is trending.
-*   **Proximity Tracking**: Real-time walking times and meter-accurate distances for every recommendation.
+### 📊 Neighbourhood Intelligence
+*   **Draggable Origin Anchor**: Move your "Home Base" (Blue Anchor) anywhere on the map to recalculate accessibility instantly.
+*   **Dynamic Navigation Intel**: Real-time travel time and distance updates for every spot, relative to your custom anchor point.
+*   **Hot Events Section**: Discovery of localized events (e.g., *Midnight Hawker Festival*) unique to the target area.
+*   **Interactive Intel Cards**: Reveal **"Vibe"** and **"Details"**—AI-generated narratives explaining why a spot is trending.
 
 ### 💎 Midnight Premium Design
 *   **Bento-Glass Layout**: A state-of-the-art interface featuring 40px blur glassmorphism and Grab Green accents.
@@ -64,6 +65,13 @@ npm run dev
 
 ### 3. Production Whitelisting
 To see live map tiles in production, ensure your domain is whitelisted in the **Grab Developer Portal** for the provided API key.
+
+## 🚀 Future Roadmap
+
+*   **Live Transit Integration**: Connect to LTA DataMall for real-time bus and MRT arrival predictions.
+*   **Vibe Heatmaps**: Visual overlays showing the "Pulse" of the city based on social media sentiment and Grab traffic density.
+*   **Collaborative Vibes**: Share a "Vibe Anchor" with friends to coordinate where to meet based on everyone's travel distance.
+*   **Native Grab Integration**: A "Book Now" button to trigger the Grab app directly with the destination pre-filled.
 
 ---
 

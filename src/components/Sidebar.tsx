@@ -422,9 +422,14 @@ function POICard({ poi, isExpanded, onClick }: { poi: any, isExpanded: boolean, 
             )}
           </div>
           <p className="text-[10px] font-bold text-muted-foreground truncate">
-            {poi.formatted_address?.startsWith(poi.name) 
-              ? poi.formatted_address.replace(poi.name, "").replace(/^[, ]+/, "") 
-              : poi.formatted_address}
+            {(() => {
+              const name = poi.name.trim();
+              const addr = poi.formatted_address || "";
+              if (addr.toLowerCase().startsWith(name.toLowerCase())) {
+                return addr.substring(name.length).replace(/^[, ]+/, "");
+              }
+              return addr;
+            })()}
           </p>
           <div className="flex flex-wrap gap-1 mt-2">
              {poi.categories?.slice(0, 2).map((c: any, idx: number) => (

@@ -41,6 +41,7 @@ export default function Sidebar({
   const inputRef = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
+  const [isRanking, setIsRanking] = useState(false);
   const [transportMode, setTransportMode] = useState<TransportMode>('driving');
   const [pois, setPois] = useState<any[]>([]);
   const [events, setEvents] = useState<any[]>([]);
@@ -218,6 +219,11 @@ export default function Sidebar({
         }));
 
         setPois(enrichedPOIs);
+        
+        // Vibe Ranking Phase
+        setIsRanking(true);
+        await new Promise(r => setTimeout(r, 2000));
+        setIsRanking(false);
       }
     } catch (err: any) {
       console.error('SEARCH FATAL:', err);
@@ -291,7 +297,35 @@ export default function Sidebar({
         {/* Content Area */}
         <div className="sidebar-content-scroll custom-scrollbar">
           <div className="px-10 pt-8 pb-32 space-y-10">
-            {/* DISCOVERY FEED - MOVED TO TOP */}
+            {isRanking ? (
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="py-20 flex flex-col items-center justify-center gap-10"
+              >
+                 <div className="relative w-32 h-32">
+                    <div className="absolute inset-0 bg-primary/10 rounded-full animate-ping duration-[3s]" />
+                    <div className="absolute inset-0 border border-primary/20 rounded-full animate-pulse" />
+                    <div className="absolute inset-4 border-2 border-primary/40 rounded-full animate-[spin_4s_linear_infinite] border-t-primary" />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                       <LayoutDashboard className="w-10 h-10 text-primary animate-pulse" />
+                    </div>
+                 </div>
+                 <div className="text-center space-y-3">
+                    <div className="flex items-center justify-center gap-2 mb-2">
+                       <span className="w-1 h-1 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0s' }} />
+                       <span className="w-1 h-1 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
+                       <span className="w-1 h-1 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.4s' }} />
+                    </div>
+                    <h3 className="text-2xl font-black text-white tracking-tighter">Ranking Urban Vibes...</h3>
+                    <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.3em] max-w-[200px] mx-auto leading-relaxed">
+                      Cross-referencing social momentum with GrabMaps density signals
+                    </p>
+                 </div>
+              </motion.div>
+            ) : (
+              <>
+                {/* DISCOVERY FEED - MOVED TO TOP */}
             <div className="p-8 pt-10 bg-white/[0.03] border border-white/10 rounded-2xl backdrop-blur-3xl relative overflow-hidden flex flex-col gap-6">
               <div className="flex flex-row items-center gap-3">
                  <div className="w-2 h-2 bg-primary rounded-full animate-ping shadow-[0_0_10px_#00b14f] shrink-0" />
@@ -427,9 +461,11 @@ export default function Sidebar({
                   </div>
                 )}
               </motion.div>
-            </AnimatePresence>
-          </div>
-        </div>
+            </>
+          )}
+        </AnimatePresence>
+      </div>
+    </div>
 
       </motion.aside>
 

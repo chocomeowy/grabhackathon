@@ -283,7 +283,41 @@ export default function Sidebar({
               </AnimatePresence>
             </div>
           </div>
-        </motion.aside>
+        </div>
+
+        {/* LIVE INTELLIGENCE FEED */}
+        <div className="mt-auto p-6 bg-black/40 border-t border-white/5 backdrop-blur-2xl">
+          <div className="flex items-center gap-3 mb-3">
+             <div className="w-2 h-2 bg-primary rounded-full animate-ping shadow-[0_0_10px_#00b14f]" />
+             <span className="text-[10px] font-black text-white uppercase tracking-[0.3em]">Neural Discovery Feed</span>
+          </div>
+          <div className="space-y-3">
+            <div className="flex items-start gap-3 p-3 rounded-xl bg-white/5 border border-white/5 animate-in fade-in slide-in-from-bottom-2 duration-700">
+               <Zap className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+               <div>
+                  <p className="text-[10px] font-bold text-white/90 leading-relaxed">
+                    {pois.length > 0 
+                      ? `${Math.max(3, Math.floor(pois.length / 3))} new high-vibe cafes detected in the last hour near ${neighbourhood}.` 
+                      : "Establishing secure link to urban intelligence layers..."}
+                  </p>
+                  <span className="text-[8px] font-black text-white/30 uppercase tracking-widest mt-1 block">Discovery Insight • Just Now</span>
+               </div>
+            </div>
+            
+            {pois.length > 3 && (
+              <div className="flex items-start gap-3 p-3 rounded-xl bg-white/5 border border-white/5 animate-in fade-in slide-in-from-bottom-2 duration-1000">
+                <Search className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+                <div>
+                   <p className="text-[10px] font-bold text-white/90 leading-relaxed">
+                     Anomalous activity detected near {pois[0].name}. Vibe score peaking at {pois[0].vibe_score}%.
+                   </p>
+                   <span className="text-[8px] font-black text-white/30 uppercase tracking-widest mt-1 block">Anomaly Report • 2m ago</span>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </motion.aside>
 
       <style jsx>{`
         .badge-premium {

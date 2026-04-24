@@ -300,12 +300,12 @@ export default function Sidebar({
                     transition={{ duration: 0.5 }}
                     className="flex items-center gap-4 h-full w-full"
                   >
-                     <div className="shrink-0 text-primary scale-125">{discoveryItems[activeDiscoveryIndex]?.icon}</div>
+                     <div className="shrink-0 text-primary scale-110">{discoveryItems[activeDiscoveryIndex]?.icon}</div>
                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-bold text-white leading-tight mb-1">
+                        <p className="text-[12px] font-bold text-white leading-tight mb-1">
                           {discoveryItems[activeDiscoveryIndex]?.text}
                         </p>
-                        <span className="text-[10px] font-black text-white/40 uppercase tracking-widest block">
+                        <span className="text-[9px] font-black text-white/40 uppercase tracking-widest block">
                           {discoveryItems[activeDiscoveryIndex]?.label}
                         </span>
                      </div>

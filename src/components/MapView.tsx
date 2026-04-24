@@ -224,18 +224,6 @@ export default function MapView({ center, poiLocation, source = 'osm' }: {
            <span className="text-[10px] font-black text-white uppercase tracking-widest">Midnight Intelligence Layer Active</span>
         </div>
       </div>
-
-      )}
-
-      {!isLoaded && !error && (
-        <div className="absolute inset-0 z-20 bg-[#0a0f1a] flex flex-col items-center justify-center gap-8">
-          <div className="w-24 h-24 border-2 border-primary/20 border-t-primary rounded-full animate-spin" />
-          <div className="text-center space-y-4">
-            <h3 className="text-2xl font-black text-white tracking-tighter uppercase italic">PulseMap</h3>
-            <p className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.4em]">Establishing Link</p>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

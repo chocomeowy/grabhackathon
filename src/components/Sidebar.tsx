@@ -243,21 +243,6 @@ export default function Sidebar({
             <p className="text-xs text-white/50 font-medium">Build real-time decision engines on top of GrabMaps.</p>
           </div>
 
-          <div className="flex gap-2 mb-6">
-            {[
-              { id: 'grab', label: 'Grab' },
-              { id: 'onemap', label: 'OneMap' },
-              { id: 'osm', label: 'OSM' }
-            ].map(src => (
-              <button 
-                key={src.id}
-                onClick={() => onMapSourceChange(src.id as any)}
-                className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest border transition-all ${mapSource === src.id ? 'bg-primary text-white border-primary shadow-[0_0_15px_rgba(0,177,79,0.4)]' : 'bg-white/5 text-white border-white/10 hover:border-white/20'}`}
-              >
-                {src.label}
-              </button>
-            ))}
-          </div>
 
           <div className="space-y-4">
             <form onSubmit={(e) => { e.preventDefault(); handleSearch(); }} className="bg-white/5 border border-white/10 rounded-2xl flex items-center p-2 group transition-all hover:bg-white/[0.08] focus-within:ring-2 focus-within:ring-primary/40">

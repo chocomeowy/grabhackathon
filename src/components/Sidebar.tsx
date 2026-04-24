@@ -21,11 +21,20 @@ const TEMPLATES = [
   { label: 'Chill Cafes', query: 'best chill cafes with wifi' }
 ];
 
-export default function Sidebar({ onLocationSelect, onPoiSelect, isCollapsed, onToggleCollapse }: { 
+export default function Sidebar({ 
+  onLocationSelect, 
+  onPoiSelect, 
+  isCollapsed, 
+  onToggleCollapse,
+  mapSource,
+  onMapSourceChange
+}: { 
   onLocationSelect?: (lat: number, lng: number) => void,
   onPoiSelect?: (lat: number, lng: number) => void,
   isCollapsed: boolean,
-  onToggleCollapse: () => void
+  onToggleCollapse: () => void,
+  mapSource: 'grab' | 'osm' | 'onemap',
+  onMapSourceChange: (source: 'grab' | 'osm' | 'onemap') => void
 }) {
   const [query, setQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
@@ -134,11 +143,25 @@ export default function Sidebar({ onLocationSelect, onPoiSelect, isCollapsed, on
             <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center text-white shadow-[0_8px_30px_rgba(0,177,79,0.3)] -rotate-3 border border-white/20">
               <LayoutDashboard className="w-7 h-7" />
             </div>
-            <div>
+            <div className="flex-1">
               <h1 className="text-2xl font-black tracking-tighter text-white">
                 PulseMap <span className="text-primary">SG</span>
               </h1>
-              <p className="text-[8px] font-black text-white/40 uppercase tracking-[0.4em]">Pulse Discovery</p>
+              <div className="flex gap-2 mt-2">
+                {[
+                  { id: 'osm', label: 'OSM' },
+                  { id: 'onemap', label: 'OneMap' },
+                  { id: 'grab', label: 'Grab' }
+                ].map(src => (
+                  <button 
+                    key={src.id}
+                    onClick={() => onMapSourceChange(src.id as any)}
+                    className={`px-2 py-0.5 rounded text-[7px] font-black uppercase tracking-widest border transition-all ${mapSource === src.id ? 'bg-primary text-white border-primary shadow-[0_0_10px_rgba(0,177,79,0.4)]' : 'bg-white/5 text-white/40 border-white/10 hover:border-white/20'}`}
+                  >
+                    {src.label}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 

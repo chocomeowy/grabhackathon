@@ -36,9 +36,10 @@ const getOneMapStyle = (token: string) => ({
 
 const GRAB_STYLE = '/api/map/style';
 
-export default function MapView({ center, poiLocation }: { 
+export default function MapView({ center, poiLocation, source = 'osm' }: { 
   center?: [number, number] | null,
-  poiLocation?: [number, number] | null
+  poiLocation?: [number, number] | null,
+  source?: MapSource
 }) {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstance = useRef<maplibregl.Map | null>(null);
@@ -46,7 +47,7 @@ export default function MapView({ center, poiLocation }: {
   const poiMarkerRef = useRef<maplibregl.Marker | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [currentSource, setCurrentSource] = useState<MapSource>('grab');
+  const [currentSource, setCurrentSource] = useState<MapSource>(source);
   const isInitializing = useRef(false);
 
   const initMap = async (source: MapSource) => {
@@ -134,9 +135,9 @@ export default function MapView({ center, poiLocation }: {
   };
 
   useEffect(() => {
-    initMap('grab');
+    initMap(source);
     return () => { if (mapInstance.current) mapInstance.current.remove(); };
-  }, []);
+  }, [source]);
 
   useEffect(() => {
     if (mapInstance.current && isLoaded) {
@@ -217,36 +218,13 @@ export default function MapView({ center, poiLocation }: {
         </div>
       )}
 
-      <div className="absolute top-6 right-6 z-50 flex flex-col gap-2">
-        <button 
-          onClick={() => initMap('grab')}
-          className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 border ${currentSource === 'grab' ? 'bg-primary text-white border-primary shadow-[0_0_20px_rgba(0,177,79,0.4)]' : 'bg-black/60 text-white/40 border-white/10 hover:bg-black/80'}`}
-        >
-          <Zap className="w-4 h-4" /> Grab Vector
-        </button>
-        <button 
-          onClick={() => initMap('onemap')}
-          className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 border ${currentSource === 'onemap' ? 'bg-primary text-white border-primary shadow-[0_0_20px_rgba(0,177,79,0.4)]' : 'bg-black/60 text-white/40 border-white/10 hover:bg-black/80'}`}
-        >
-          <Layers className="w-4 h-4" /> OneMap SG
-        </button>
-        <button 
-          onClick={() => initMap('osm')}
-          className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 border ${currentSource === 'osm' ? 'bg-primary text-white border-primary shadow-[0_0_20px_rgba(0,177,79,0.4)]' : 'bg-black/60 text-white/40 border-white/10 hover:bg-black/80'}`}
-        >
-          <Layers className="w-4 h-4" /> OSM Raster
-        </button>
+      <div className="absolute bottom-10 left-10 pointer-events-none z-10">
+        <div className="flex items-center gap-4 p-4 glass-card bg-black/40 border-white/5">
+           <div className="w-2 h-2 bg-primary rounded-full animate-pulse shadow-[0_0_10px_#00b14f]" />
+           <span className="text-[10px] font-black text-white uppercase tracking-widest">Midnight Intelligence Layer Active</span>
+        </div>
       </div>
 
-      {currentSource !== 'grab' && isLoaded && (
-        <div className="absolute top-6 left-1/2 -translate-x-1/2 z-50">
-           <div className={`px-5 py-2.5 backdrop-blur-3xl border rounded-full flex items-center gap-3 shadow-2xl ${currentSource === 'onemap' ? 'bg-blue-600/20 border-blue-500/40' : 'bg-zinc-600/20 border-zinc-500/40'}`}>
-             <div className={`w-2 h-2 rounded-full animate-ping ${currentSource === 'onemap' ? 'bg-blue-500' : 'bg-zinc-500'}`} />
-             <span className={`text-[10px] font-black uppercase tracking-[0.2em] ${currentSource === 'onemap' ? 'text-blue-400' : 'text-zinc-400'}`}>
-               {currentSource === 'onemap' ? 'OneMap Authority Active' : 'OSM Resilience Active'}
-             </span>
-           </div>
-        </div>
       )}
 
       {!isLoaded && !error && (

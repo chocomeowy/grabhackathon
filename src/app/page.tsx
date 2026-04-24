@@ -10,10 +10,11 @@ export default function Home() {
   const [mapCenter, setMapCenter] = useState<[number, number] | null>(null);
   const [poiLocation, setPoiLocation] = useState<[number, number] | null>(null);
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [mapSource, setMapSource] = useState<'grab' | 'osm' | 'onemap'>('osm');
 
   const handleLocationSelect = (lat: number, lng: number) => {
     setMapCenter([lng, lat]);
-    setPoiLocation(null); // Reset POI when searching new area
+    setPoiLocation(null);
   };
 
   const handlePoiSelect = (lat: number, lng: number) => {
@@ -32,6 +33,8 @@ export default function Home() {
           onPoiSelect={handlePoiSelect}
           isCollapsed={isCollapsed} 
           onToggleCollapse={() => setIsCollapsed(!isCollapsed)} 
+          mapSource={mapSource}
+          onMapSourceChange={setMapSource}
         />
       </div>
 
@@ -50,7 +53,7 @@ export default function Home() {
             </motion.button>
           )}
         </AnimatePresence>
-        <MapView center={mapCenter} poiLocation={poiLocation} />
+        <MapView center={mapCenter} poiLocation={poiLocation} source={mapSource} />
       </div>
     </main>
   );

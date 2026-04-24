@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, LayoutDashboard } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Sidebar from "@/components/Sidebar";
 import MapView from "@/components/MapView";
 
@@ -36,14 +37,19 @@ export default function Home() {
 
       {/* Main Map Experience */}
       <div className="map-wrapper relative flex-1">
-        {isCollapsed && (
-          <button 
-            onClick={() => setIsCollapsed(false)}
-            className="absolute left-6 top-1/2 -translate-y-1/2 w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white shadow-2xl z-[100] hover:scale-110 active:scale-95 transition-all"
-          >
-            <ChevronRight className="w-6 h-6" />
-          </button>
-        )}
+        <AnimatePresence>
+          {isCollapsed && (
+            <motion.button 
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              onClick={() => setIsCollapsed(false)}
+              className="absolute left-6 top-6 w-12 h-12 bg-primary rounded-xl flex items-center justify-center text-white shadow-[0_0_30px_rgba(0,177,79,0.5)] z-[1000] hover:scale-110 active:scale-95 transition-all border border-white/20"
+            >
+              <LayoutDashboard className="w-6 h-6" />
+            </motion.button>
+          )}
+        </AnimatePresence>
         <MapView center={mapCenter} poiLocation={poiLocation} />
       </div>
     </main>

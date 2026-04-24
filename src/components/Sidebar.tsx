@@ -21,16 +21,19 @@ const TEMPLATES = [
   { label: 'Chill Cafes', query: 'best chill cafes with wifi' }
 ];
 
-export default function Sidebar({ onLocationSelect }: { onLocationSelect?: (lat: number, lng: number) => void }) {
+export default function Sidebar({ onLocationSelect, onPoiSelect, isCollapsed, onToggleCollapse }: { 
+  onLocationSelect?: (lat: number, lng: number) => void,
+  onPoiSelect?: (lat: number, lng: number) => void,
+  isCollapsed: boolean,
+  onToggleCollapse: () => void
+}) {
   const [query, setQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
-  const [activeTab, setActiveTab] = useState<'intel' | 'itinerary'>('intel');
   const [transportMode, setTransportMode] = useState<TransportMode>('driving');
   const [pois, setPois] = useState<any[]>([]);
   const [events, setEvents] = useState<any[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [neighbourhood, setNeighbourhood] = useState('Singapore');
-  const [isCollapsed, setIsCollapsed] = useState(false);
   const [errorDetails, setErrorDetails] = useState<string | null>(null);
   const [selectedPoiId, setSelectedPoiId] = useState<string | null>(null);
 
@@ -117,7 +120,7 @@ export default function Sidebar({ onLocationSelect }: { onLocationSelect?: (lat:
     <div className="relative h-full flex">
       {/* Dynamic Collapse Toggle */}
       <button 
-        onClick={() => setIsCollapsed(!isCollapsed)}
+        onClick={onToggleCollapse}
         className={`absolute -right-5 top-1/2 -translate-y-1/2 w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white shadow-[0_0_20px_rgba(0,177,79,0.4)] z-50 transition-all hover:scale-110 active:scale-90 ${isCollapsed ? 'rotate-180 -right-12' : ''}`}
       >
         <ChevronLeft className="w-6 h-6" />
@@ -245,7 +248,10 @@ export default function Sidebar({ onLocationSelect }: { onLocationSelect?: (lat:
                             key={poi.poi_id} 
                             poi={poi} 
                             isExpanded={selectedPoiId === poi.poi_id}
-                            onClick={() => setSelectedPoiId(selectedPoiId === poi.poi_id ? null : poi.poi_id)}
+                            onClick={() => {
+                               setSelectedPoiId(selectedPoiId === poi.poi_id ? null : poi.poi_id);
+                               if (onPoiSelect) onPoiSelect(poi.location.latitude, poi.location.longitude);
+                            }}
                            />
                          )) : (
                            <EmptyState text="Enter a vibe to reveal urban intel..." />
@@ -305,7 +311,11 @@ function POICard({ poi, isExpanded, onClick }: { poi: any, isExpanded: boolean, 
               </div>
             )}
           </div>
-          <p className="text-[10px] font-bold text-muted-foreground truncate">{poi.formatted_address}</p>
+          <p className="text-[10px] font-bold text-muted-foreground truncate">
+            {poi.formatted_address?.startsWith(poi.name) 
+              ? poi.formatted_address.replace(poi.name, "").replace(/^[, ]+/, "") 
+              : poi.formatted_address}
+          </p>
           <div className="flex flex-wrap gap-1 mt-2">
              {poi.categories?.slice(0, 2).map((c: any, idx: number) => (
                <span key={`${c.name}-${idx}`} className="px-1.5 py-0.5 bg-white/5 rounded-md text-[7px] font-black text-white/40 uppercase">{c.name}</span>

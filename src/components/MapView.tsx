@@ -36,33 +36,32 @@ const getOneMapStyle = (token: string) => ({
 
 const GRAB_STYLE = '/api/map/style';
 
-export default function MapView({ center }: { center?: [number, number] | null }) {
+export default function MapView({ center, poiLocation }: { 
+  center?: [number, number] | null,
+  poiLocation?: [number, number] | null
+}) {
   const mapRef = useRef<HTMLDivElement>(null);
+  const mapInstance = useRef<maplibregl.Map | null>(null);
+  const markerInstance = useRef<maplibregl.Marker | null>(null);
+  const poiMarkerRef = useRef<maplibregl.Marker | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [currentSource, setCurrentSource] = useState<MapSource>('grab');
   const [error, setError] = useState<string | null>(null);
-  const mapInstance = useRef<any>(null);
-  const markerInstance = useRef<any>(null);
+  const [currentSource, setCurrentSource] = useState<MapSource>('grab');
   const isInitializing = useRef(false);
 
   const initMap = async (source: MapSource) => {
     if (!mapRef.current) return;
     
-    // Force reset initialization lock for manual switches
     isInitializing.current = true;
     setIsLoaded(false);
     setCurrentSource(source);
     setError(null);
 
-    console.log(`MAP: Initializing ${source.toUpperCase()}...`);
-
     if (mapInstance.current) {
       try { 
         mapInstance.current.remove(); 
         mapInstance.current = null;
-      } catch (e) {
-        console.warn('MAP: Cleanup error', e);
-      }
+      } catch (e) {}
     }
 
     try {
@@ -91,44 +90,36 @@ export default function MapView({ center }: { center?: [number, number] | null }
       mapInstance.current = map;
 
       map.on('load', () => {
-        console.log(`MAP: ${source.toUpperCase()} Loaded Successfully.`);
-        map.resize();
+        setTimeout(() => map.resize(), 100);
         setIsLoaded(true);
         isInitializing.current = false;
-        
-        if (center) {
-           if (markerInstance.current) markerInstance.current.remove();
-           const el = document.createElement('div');
-           el.className = 'pulse-marker';
-           markerInstance.current = new maplibregl.Marker({ element: el })
-             .setLngLat(center)
-             .addTo(map);
+
+        // Register Path Source
+        if (!map.getSource('pulse-path')) {
+          map.addSource('pulse-path', {
+            type: 'geojson',
+            data: { type: 'Feature', geometry: { type: 'LineString', coordinates: [] }, properties: {} }
+          });
+          map.addLayer({
+            id: 'pulse-path',
+            type: 'line',
+            source: 'pulse-path',
+            layout: { 'line-join': 'round', 'line-cap': 'round' },
+            paint: { 'line-color': '#00b14f', 'line-width': 4, 'line-dasharray': [2, 1] }
+          });
         }
       });
 
-      map.on('error', (e: any) => {
-        console.error(`MAP ${source.toUpperCase()} ERROR:`, e);
-        if (source === 'grab' && !isLoaded) {
-           console.warn('MAP: Grab fatal error. Auto-failing to OSM...');
-           isInitializing.current = false;
-           initMap('osm');
-        }
-      });
-
-      // Rapid failover for Grab only
       if (source === 'grab') {
         setTimeout(() => {
-          if (!isLoaded && mapInstance.current === map && currentSource === 'grab') {
-            console.warn('MAP: Grab timeout. Auto-failing to OSM...');
+          if (!isLoaded && mapInstance.current === map) {
             isInitializing.current = false;
             initMap('osm');
           }
         }, 4000);
       } else {
-        // For OSM/OneMap, force "loaded" after 2s if no error
         setTimeout(() => {
           if (!isLoaded && mapInstance.current === map) {
-            console.log('MAP: Forcing Loaded state for raster layer.');
             setIsLoaded(true);
             isInitializing.current = false;
           }
@@ -136,7 +127,6 @@ export default function MapView({ center }: { center?: [number, number] | null }
       }
 
     } catch (err: any) {
-      console.error('MAP: Constructor fatal', err);
       isInitializing.current = false;
       if (source === 'grab') initMap('osm');
       else setError(err.message);
@@ -149,47 +139,103 @@ export default function MapView({ center }: { center?: [number, number] | null }
   }, []);
 
   useEffect(() => {
-    if (mapInstance.current && center && isLoaded) {
-      mapInstance.current.flyTo({ center, zoom: 16, speed: 1.2, essential: true });
-      if (markerInstance.current) {
-        markerInstance.current.setLngLat(center);
-      } else {
+    if (mapInstance.current && isLoaded) {
+      const map = mapInstance.current;
+      
+      // Update Neighborhood Center
+      if (center) {
+        if (markerInstance.current) markerInstance.current.remove();
         const el = document.createElement('div');
-        el.className = 'pulse-marker';
+        el.className = 'pulse-marker main-pulse';
         markerInstance.current = new maplibregl.Marker({ element: el })
           .setLngLat(center)
-          .addTo(mapInstance.current);
+          .addTo(map);
+
+        if (!poiLocation) {
+          map.flyTo({ center, zoom: 16, speed: 1.2, essential: true });
+        }
+      }
+
+      // Update Selected POI
+      if (poiLocation) {
+        if (poiMarkerRef.current) poiMarkerRef.current.remove();
+        const el = document.createElement('div');
+        el.className = 'pulse-marker poi-pulse';
+        el.style.backgroundColor = '#ffffff';
+        poiMarkerRef.current = new maplibregl.Marker({ element: el })
+          .setLngLat(poiLocation)
+          .addTo(map);
+
+        // Draw Line between center and POI
+        if (center) {
+          const pathSource = map.getSource('pulse-path') as any;
+          if (pathSource) {
+            pathSource.setData({
+              type: 'Feature',
+              geometry: {
+                type: 'LineString',
+                coordinates: [center, poiLocation]
+              },
+              properties: {}
+            });
+          }
+          
+          // Fit both in view
+          const bounds = new maplibregl.LngLatBounds();
+          bounds.extend(center);
+          bounds.extend(poiLocation);
+          map.fitBounds(bounds, { padding: 100, speed: 1.2 });
+        }
+      } else {
+        // Clear Path and POI Marker
+        if (poiMarkerRef.current) poiMarkerRef.current.remove();
+        const pathSource = map.getSource('pulse-path') as any;
+        if (pathSource) {
+          pathSource.setData({ type: 'Feature', geometry: { type: 'LineString', coordinates: [] }, properties: {} });
+        }
       }
     }
-  }, [center, isLoaded]);
+  }, [center, poiLocation, isLoaded]);
 
   return (
-    <div className="absolute inset-0 bg-[#0a0a0a] overflow-hidden flex items-center justify-center">
-      <div ref={mapRef} className="absolute inset-0 z-0 bg-zinc-900" style={{ width: '100%', height: '100%' }} />
+    <div 
+      className="bg-[#0a0a0a] overflow-hidden flex items-center justify-center"
+      style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 0 }}
+    >
+      <div 
+        ref={mapRef} 
+        className="bg-zinc-900" 
+        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} 
+      />
       
-      {/* Overlays */}
-      <div className="absolute inset-0 pointer-events-none z-10 bg-gradient-to-t from-black/80 via-transparent to-black/20" />
+      {!isLoaded && (
+        <div className="absolute inset-0 z-10 bg-black/40 backdrop-blur-md flex items-center justify-center">
+           <div className="flex flex-col items-center gap-6">
+              <div className="w-16 h-16 border-2 border-primary/20 border-t-primary rounded-full animate-spin" />
+              <span className="text-[10px] font-black text-primary uppercase tracking-[0.4em] animate-pulse">Syncing Urban Nodes...</span>
+           </div>
+        </div>
+      )}
 
-      {/* Manual Source Toggles */}
       <div className="absolute top-6 right-6 z-50 flex flex-col gap-2">
-         <button 
-           onClick={() => initMap('grab')}
-           className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase transition-all backdrop-blur-xl border ${currentSource === 'grab' ? 'bg-primary text-white border-primary shadow-lg shadow-primary/30' : 'bg-white/5 text-white/40 border-white/10 hover:bg-white/10'}`}
-         >
-           GrabMaps
-         </button>
-         <button 
-           onClick={() => initMap('onemap')}
-           className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase transition-all backdrop-blur-xl border ${currentSource === 'onemap' ? 'bg-blue-600 text-white border-blue-600 shadow-lg shadow-blue-600/30' : 'bg-white/5 text-white/40 border-white/10 hover:bg-white/10'}`}
-         >
-           OneMap SG
-         </button>
-         <button 
-           onClick={() => initMap('osm')}
-           className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase transition-all backdrop-blur-xl border ${currentSource === 'osm' ? 'bg-zinc-600 text-white border-zinc-600 shadow-lg shadow-zinc-600/30' : 'bg-white/5 text-white/40 border-white/10 hover:bg-white/10'}`}
-         >
-           OSM Layer
-         </button>
+        <button 
+          onClick={() => initMap('grab')}
+          className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 border ${currentSource === 'grab' ? 'bg-primary text-white border-primary shadow-[0_0_20px_rgba(0,177,79,0.4)]' : 'bg-black/60 text-white/40 border-white/10 hover:bg-black/80'}`}
+        >
+          <Zap className="w-4 h-4" /> Grab Vector
+        </button>
+        <button 
+          onClick={() => initMap('onemap')}
+          className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 border ${currentSource === 'onemap' ? 'bg-primary text-white border-primary shadow-[0_0_20px_rgba(0,177,79,0.4)]' : 'bg-black/60 text-white/40 border-white/10 hover:bg-black/80'}`}
+        >
+          <Layers className="w-4 h-4" /> OneMap SG
+        </button>
+        <button 
+          onClick={() => initMap('osm')}
+          className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 border ${currentSource === 'osm' ? 'bg-primary text-white border-primary shadow-[0_0_20px_rgba(0,177,79,0.4)]' : 'bg-black/60 text-white/40 border-white/10 hover:bg-black/80'}`}
+        >
+          <Layers className="w-4 h-4" /> OSM Raster
+        </button>
       </div>
 
       {currentSource !== 'grab' && isLoaded && (

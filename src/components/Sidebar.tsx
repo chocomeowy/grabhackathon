@@ -169,11 +169,10 @@ export default function Sidebar({ onLocationSelect }: { onLocationSelect?: (lat:
           </div>
         </div>
 
-        {/* Content Scroll Area - Absolute Inset Pattern for Bulletproof Scrolling */}
-        <div className="flex-1 min-h-0 relative">
-          <div className="absolute inset-0 overflow-y-auto px-10 pb-32 custom-scrollbar">
-            <div className="py-10 space-y-10">
-              <AnimatePresence mode="wait">
+        {/* Content Scroll Area - Unbreakable Scroll Engine */}
+        <div className="sidebar-content-scroll custom-scrollbar px-10 pb-32">
+          <div className="py-10 space-y-10">
+            <AnimatePresence mode="wait">
                 {activeTab === 'intel' ? (
                   <motion.div 
                     key="intel"
@@ -265,8 +264,7 @@ export default function Sidebar({ onLocationSelect }: { onLocationSelect?: (lat:
               </AnimatePresence>
             </div>
           </div>
-        </div>
-      </motion.aside>
+        </motion.aside>
 
       <style jsx>{`
         .badge-premium {

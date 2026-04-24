@@ -92,7 +92,8 @@ export default function MapView({ center }: { center?: [number, number] | null }
       mapInstance.current = map;
 
       map.on('load', () => {
-        console.log('MAP: Load Event Fired.');
+        console.log('MAP: Load complete.');
+        map.resize(); // FORCE CANVAS TO FILL PARENT
         setIsLoaded(true);
         setIsFallback(useFallback);
         isInitializing.current = false;

@@ -3,17 +3,8 @@
 :root {
   --background: #050505;
   --foreground: #ffffff;
-  
-  --primary: #00b14f; /* Grab Green */
+  --primary: #00b14f;
   --primary-glow: rgba(0, 177, 79, 0.3);
-  
-  --secondary: #121214;
-  --muted: #1a1a1c;
-  --muted-foreground: #71717a;
-  
-  --accent-purple: #8b5cf6;
-  --accent-blue: #3b82f6;
-  
   --radius: 1.5rem;
 }
 
@@ -23,20 +14,76 @@
   margin: 0;
 }
 
-body {
+html, body {
+  height: 100vh !important;
+  width: 100vw !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
   font-family: 'Outfit', sans-serif;
   background: var(--background);
   color: var(--foreground);
-  overflow: hidden;
-  -webkit-font-smoothing: antialiased;
 }
 
-/* Glassmorphism Core */
+/* Master Layout */
+.main-layout {
+  display: flex !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  overflow: hidden !important;
+  position: fixed !important;
+  top: 0;
+  left: 0;
+}
+
+.sidebar-wrapper {
+  z-index: 50;
+  width: 420px !important;
+  height: 100vh !important;
+  max-height: 100vh !important;
+  flex-shrink: 0 !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.map-wrapper {
+  flex: 1 !important;
+  height: 100vh !important;
+  max-height: 100vh !important;
+  position: relative !important;
+  background: #0a0a0c !important;
+  overflow: hidden !important;
+}
+
+/* Force MapLibre to fill */
+.maplibregl-canvas {
+  width: 100% !important;
+  height: 100% !important;
+  position: absolute !important;
+  top: 0;
+  left: 0;
+}
+
 .glass-sidebar {
-  background: rgba(10, 10, 12, 0.8);
+  width: 100% !important;
+  height: 100% !important;
+  max-height: 100vh !important;
+  background: rgba(10, 10, 12, 0.9) !important;
   backdrop-filter: blur(40px);
   -webkit-backdrop-filter: blur(40px);
   border-right: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+}
+
+/* Scroll Container Fix */
+.sidebar-content-scroll {
+  flex: 1 !important;
+  min-height: 0 !important;
+  position: relative !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
 }
 
 .glass-card {
@@ -44,123 +91,27 @@ body {
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: var(--radius);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s ease;
 }
 
 .glass-card:hover {
   background: rgba(255, 255, 255, 0.04);
-  border-color: rgba(255, 255, 255, 0.1);
   transform: translateY(-2px);
 }
 
-/* Input Fix - Ensuring it's NEVER white */
-.vibe-input-container {
-  background: #1a1a1c !important;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 1.25rem;
-  box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
-  transition: all 0.2s ease;
-}
-
-.vibe-input-container:focus-within {
-  border-color: var(--primary);
-  box-shadow: 0 0 20px var(--primary-glow), inset 0 2px 4px rgba(0,0,0,0.5);
-}
-
-.vibe-input {
-  background: transparent !important;
-  color: white !important;
-  font-weight: 700;
-  outline: none;
-}
-
-.vibe-input::placeholder {
-  color: rgba(255, 255, 255, 0.2);
-}
-
-/* Scrollbar */
+/* Custom Scrollbar */
 .custom-scrollbar::-webkit-scrollbar { width: 4px; }
 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-.custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
 
-/* Modern Buttons */
-.btn-primary {
-  background: rgba(0, 177, 79, 0.85);
-  backdrop-filter: blur(10px);
-  color: white;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  font-size: 11px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 1.25rem;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 8px 20px rgba(0, 177, 79, 0.2);
-}
-
-.btn-primary:hover {
-  background: var(--primary);
-  transform: translateY(-2px) scale(1.01);
-  box-shadow: 0 12px 30px rgba(0, 177, 79, 0.4);
-}
-
-.btn-secondary {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: white;
-  font-weight: 700;
-  border-radius: 1.25rem;
-  transition: all 0.2s ease;
-}
-
-.btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.2);
-}
-
-/* Responsiveness */
-.main-layout {
-  display: flex;
-  width: 100vw;
-  height: 100vh;
-}
-
-.sidebar-wrapper {
-  z-index: 50;
-  position: relative;
-  height: 100vh;
-  width: 420px;
-  flex-shrink: 0;
-}
-
-.map-wrapper {
-  flex: 1;
-  position: relative;
-  height: 100vh;
-  background: #0a0a0c;
-}
-
-@media (max-width: 1024px) {
-  .sidebar-wrapper { width: 380px; }
-}
-
-@media (max-width: 768px) {
-  .main-layout { flex-direction: column-reverse; }
-  .sidebar-wrapper { width: 100%; height: 50vh; }
-  .map-wrapper { height: 50vh; }
-}
-
-/* PULSE MARKER - High Visibility Urban Node */
+/* Pulse Marker */
 .pulse-marker {
   width: 20px;
   height: 20px;
   background: #00b14f;
   border: 3px solid white;
   border-radius: 50%;
-  cursor: pointer;
   box-shadow: 0 0 20px rgba(0, 177, 79, 0.6);
-  position: relative;
 }
 
 .pulse-marker::after {
@@ -169,9 +120,12 @@ body {
   inset: -10px;
   border: 2px solid #00b14f;
   border-radius: 50%;
-  animation: marker-ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+  animation: marker-ping 2s infinite;
 }
 
-@keyframes marker-ping {
-  75%, 100% { transform: scale(2.5); opacity: 0; }
+@keyframes marker-ping { 75%, 100% { transform: scale(2.5); opacity: 0; } }
+
+@media (max-width: 768px) {
+  .main-layout { flex-direction: column-reverse !important; }
+  .sidebar-wrapper, .map-wrapper { width: 100% !important; height: 50vh !important; }
 }

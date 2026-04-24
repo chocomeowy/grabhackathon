@@ -7,7 +7,7 @@ import { NextRequest, NextResponse } from 'next/server';
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { path: string[] } }
+  { params }: { params: Promise<{ path: string[] }> }
 ) {
   const apiKey = process.env.NEXT_PUBLIC_GRABMAPS_API_KEY || process.env.GRABMAPS_API_KEY;
   if (!apiKey) return NextResponse.json({ error: 'Missing Key' }, { status: 401 });

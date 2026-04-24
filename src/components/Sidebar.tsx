@@ -579,9 +579,6 @@ function POICard({ poi, isExpanded, onClick, travelInfo }: {
                </div>
             </div>
 
-            <button className="w-full py-4 bg-primary rounded-2xl text-[10px] font-black uppercase tracking-widest text-white shadow-xl shadow-primary/20 flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all">
-              <Navigation className="w-4 h-4 fill-current" /> Initialize Navigation
-            </button>
           </motion.div>
         )}
       </AnimatePresence>

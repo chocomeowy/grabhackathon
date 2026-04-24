@@ -26,7 +26,7 @@ const getOneMapStyle = (token: string) => ({
   sources: {
     'onemap': {
       type: 'raster',
-      tiles: [`https://maps-a.onemap.sg/v3/Default/{z}/{x}/{y}.png?OToken=${token}`],
+      tiles: [`https://www.onemap.gov.sg/maps/tiles/Night/{z}/{x}/{y}.png`],
       tileSize: 256,
       attribution: 'OneMap Singapore'
     }

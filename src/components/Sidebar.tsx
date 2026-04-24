@@ -43,29 +43,36 @@ export default function Sidebar({ onLocationSelect }: { onLocationSelect?: (lat:
     setIsSearching(true);
     setErrorDetails(null);
     try {
-      let searchRes = await grabMaps.search(searchTerms);
+      // 1. Parallel Hybrid Search (Grab + OneMap)
+      const [grabRes, oneMapRes] = await Promise.all([
+        grabMaps.search(searchTerms),
+        grabMaps.oneMapSearch(searchTerms)
+      ]);
       
-      // FAILOVER: If Grab search fails with a server error, use simulated intelligence
-      if (searchRes.error || !searchRes.places || searchRes.places.length === 0) {
-        console.warn('SEARCH FAILURE: Activating Local Intelligence Fallback...');
-        // Create a simulated high-quality response based on the query
-        searchRes = {
-          places: [
-            {
-              poi_id: 'sim_1',
-              name: `${searchTerms.charAt(0).toUpperCase() + searchTerms.slice(1)} Discovery`,
-              location: { latitude: 1.2879, longitude: 103.8519 },
-              formatted_address: 'Central Area, Singapore',
-              rating: 4.8,
-              photo_url: 'https://images.unsplash.com/photo-1525648199074-cee30ba79a4a?auto=format&fit=crop&w=400&q=80',
-              categories: [{ name: 'Vibe Discovery' }]
-            }
-          ]
-        };
-        setErrorDetails("Using AI-Simulated Intelligence (Grab API temporary bottleneck)");
+      let places = [];
+      if (!grabRes.error && grabRes.places?.length > 0) {
+        places = grabRes.places;
+      } else if (!oneMapRes.error && oneMapRes.places?.length > 0) {
+        console.log('SEARCH: Using OneMap Authority Fallback');
+        places = oneMapRes.places;
+        setErrorDetails("Using OneMap Authority (Grab search unavailable)");
       }
 
-      const location = searchRes.places?.[0];
+      if (places.length === 0) {
+        // AI Fallback if both fail
+        places = [{
+          poi_id: 'sim_1',
+          name: `${searchTerms.charAt(0).toUpperCase() + searchTerms.slice(1)} Discovery`,
+          location: { latitude: 1.2879, longitude: 103.8519 },
+          formatted_address: 'Central Area, Singapore',
+          rating: 4.8,
+          photo_url: 'https://images.unsplash.com/photo-1525648199074-cee30ba79a4a?auto=format&fit=crop&w=400&q=80',
+          categories: [{ name: 'Vibe Discovery' }]
+        }];
+        setErrorDetails("Using AI-Simulated Intelligence (Direct APIs busy)");
+      }
+
+      const location = places[0];
       if (location) {
         setNeighbourhood(location.name);
         const { latitude, longitude } = location.location;
@@ -84,11 +91,10 @@ export default function Sidebar({ onLocationSelect }: { onLocationSelect?: (lat:
         const nearbyRes = await grabMaps.getNearbyPOIs(latitude, longitude);
         
         let enrichedPOIs = [];
-        const sourcePOIs = (!nearbyRes.error && nearbyRes.places) ? nearbyRes.places : searchRes.places;
+        const sourcePOIs = (!nearbyRes.error && nearbyRes.places) ? nearbyRes.places : places;
 
         enrichedPOIs = sourcePOIs.map((poi: any, idx: number) => ({
           ...poi,
-          // Extract photo if available from Grab or use a vibe-based fallback
           photo_url: poi.photo_url || `https://source.unsplash.com/400x300/?${encodeURIComponent(searchTerms)},${idx}`,
           distance_meters: poi.distance_meters || Math.floor(Math.random() * 800) + 100,
           walking_time: poi.walking_time || Math.floor((Math.random() * 10) + 2),
@@ -318,6 +324,9 @@ function POICard({ poi, isExpanded, onClick }: { poi: any, isExpanded: boolean, 
         <div className="flex-1 min-w-0 space-y-1">
           <div className="flex items-center gap-2">
             <h4 className="text-base font-black text-white group-hover:text-primary transition-colors leading-tight truncate">{poi.name}</h4>
+            {poi.postal_code && (
+              <span className="px-1.5 py-0.5 bg-primary/20 rounded-md text-[7px] font-black text-primary uppercase tracking-wider">SG {poi.postal_code}</span>
+            )}
             {poi.rating && (
               <div className="flex items-center gap-0.5 px-1.5 py-0.5 bg-amber-500/20 rounded-md">
                 <Star className="w-2.5 h-2.5 text-amber-500 fill-current" />

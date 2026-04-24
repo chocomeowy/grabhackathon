@@ -26,5 +26,11 @@ export const grabMaps = {
       return { error: 'Nearby Failed', details: err.details };
     }
     return response.json();
+  },
+
+  async oneMapSearch(query: string): Promise<any> {
+    const response = await fetch(`/api/onemap/search?query=${encodeURIComponent(query)}`);
+    if (!response.ok) return { error: 'OneMap Failed' };
+    return response.json();
   }
 };

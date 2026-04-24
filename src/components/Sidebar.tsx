@@ -223,16 +223,6 @@ export default function Sidebar({
 
   return (
     <div className="relative h-full flex">
-      {/* Dynamic Collapse Toggle */}
-      <button 
-        onClick={onToggleCollapse}
-        className={`absolute z-50 bg-primary rounded-full flex items-center justify-center text-white shadow-[0_0_20px_rgba(0,177,79,0.4)] transition-all hover:scale-110 active:scale-90
-          md:-right-5 md:top-1/2 md:-translate-y-1/2 md:w-10 md:h-10
-          max-md:right-4 max-md:top-4 max-md:w-10 max-md:h-10
-          ${isCollapsed ? 'md:rotate-180 md:-right-12 max-md:rotate-90' : 'max-md:-rotate-90'}`}
-      >
-        <ChevronLeft className="w-6 h-6" />
-      </button>
 
       <motion.aside 
         className="h-full glass-sidebar flex flex-col relative shadow-2xl w-[420px]"

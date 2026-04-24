@@ -53,6 +53,20 @@ export default function Home() {
         />
       </div>
 
+      {/* Dynamic Collapse Toggle - Positioned relative to wrapper */}
+      <button 
+        onClick={() => setIsCollapsed(!isCollapsed)}
+        className={`fixed z-[100] bg-primary rounded-full flex items-center justify-center text-white shadow-[0_0_20px_rgba(0,177,79,0.4)] transition-all hover:scale-110 active:scale-90
+          md:top-1/2 md:-translate-y-1/2 md:w-10 md:h-10
+          max-md:w-12 max-md:h-12
+          ${isMobile 
+            ? `right-6 ${isCollapsed ? 'bottom-6 rotate-90' : 'bottom-[52vh] -rotate-90'}` 
+            : `left-[${isCollapsed ? '0px' : '405px'}] ${isCollapsed ? 'rotate-180 ml-6' : ''}`}`}
+        style={!isMobile ? { left: isCollapsed ? '20px' : '405px' } : {}}
+      >
+        <ChevronLeft className="w-6 h-6" />
+      </button>
+
       {/* Main Map Experience */}
       <div className="map-wrapper relative flex-1">
         <MapView 

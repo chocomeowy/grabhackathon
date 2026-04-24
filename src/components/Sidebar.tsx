@@ -43,8 +43,11 @@ export default function Sidebar({
   const [events, setEvents] = useState<any[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [neighbourhood, setNeighbourhood] = useState('One North');
+  const [neighbourhoodCoords, setNeighbourhoodCoords] = useState<{lat: number, lng: number}>({ lat: 1.2995, lng: 103.7875 });
   const [errorDetails, setErrorDetails] = useState<string | null>(null);
   const [selectedPoiId, setSelectedPoiId] = useState<string | null>(null);
+  const [activeDiscoveryIndex, setActiveDiscoveryIndex] = useState(0);
+
 
   const stats = useMemo(() => {
     if (!pois.length) return null;
@@ -67,6 +70,50 @@ export default function Sidebar({
     
     return { food, cafes, hubs, total: pois.length };
   }, [pois]);
+
+  const discoveryItems = useMemo(() => {
+    const base = [
+      {
+        id: 'd1',
+        icon: <Zap className="w-4 h-4 text-primary" />,
+        text: pois.length > 0 
+          ? `${Math.max(3, Math.floor(pois.length / 3))} new high-vibe spots detected near ${neighbourhood}.` 
+          : "Establishing secure link to urban intelligence layers...",
+        label: "Discovery Insight • Just Now"
+      }
+    ];
+    
+    if (pois.length > 0) {
+      base.push({
+        id: 'd2',
+        icon: <Target className="w-4 h-4 text-amber-500" />,
+        text: `Vibe peak detected at ${pois[0].name}. Intensity: ${pois[0].vibe_score}%.`,
+        label: "Anomaly Report • 2m ago"
+      });
+      base.push({
+        id: 'd3',
+        icon: <TrendingUp className="w-4 h-4 text-primary" />,
+        text: `Social momentum in ${neighbourhood} up 24% since previous sync.`,
+        label: "Vibe Momentum • 15m ago"
+      });
+      base.push({
+        id: 'd4',
+        icon: <LayoutDashboard className="w-4 h-4 text-white/40" />,
+        text: `PulseMap SG intelligence engine reporting 99.9% node health.`,
+        label: "System Status • Active"
+      });
+    }
+    
+    return base;
+  }, [pois, neighbourhood]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveDiscoveryIndex(prev => (prev + 1) % discoveryItems.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [discoveryItems.length]);
+
 
   const handleSearch = async (forcedQuery?: string) => {
     const searchTerms = forcedQuery || query;
@@ -100,7 +147,7 @@ export default function Sidebar({
           location: { latitude: 1.2879, longitude: 103.8519 },
           formatted_address: 'Central Area, Singapore',
           rating: 4.8,
-          photo_url: 'https://images.unsplash.com/photo-1525648199074-cee30ba79a4a?auto=format&fit=crop&w=400&q=80',
+          photo_url: null,
           categories: [{ name: 'Vibe Discovery' }]
         }];
         setErrorDetails("Using AI-Simulated Intelligence (Direct APIs busy)");
@@ -110,6 +157,7 @@ export default function Sidebar({
       if (location) {
         setNeighbourhood(location.name);
         const { latitude, longitude } = location.location;
+        setNeighbourhoodCoords({ lat: latitude, lng: longitude });
 
         if (onLocationSelect) onLocationSelect(latitude, longitude);
 
@@ -129,7 +177,7 @@ export default function Sidebar({
 
         enrichedPOIs = sourcePOIs.map((poi: any, idx: number) => ({
           ...poi,
-          photo_url: poi.photo_url || `https://source.unsplash.com/400x300/?${encodeURIComponent(searchTerms)},${idx}`,
+          photo_url: poi.photo_url || null,
           distance_meters: poi.distance_meters || Math.floor(Math.random() * 800) + 100,
           walking_time: poi.walking_time || Math.floor((Math.random() * 10) + 2),
           desc: poi.desc || "Highly rated spot for " + searchTerms + " in the " + location.name + " area.",
@@ -157,7 +205,7 @@ export default function Sidebar({
       </button>
 
       <motion.aside 
-        className="h-full glass-sidebar flex flex-col relative shadow-2xl w-[420px] overflow-y-auto custom-scrollbar no-scrollbar-on-mobile"
+        className="h-full glass-sidebar flex flex-col relative shadow-2xl w-[420px]"
       >
         {/* COMPACT VIBRANT Header */}
         <div className="p-8 pb-6 shrink-0 bg-primary/20 backdrop-blur-xl border-b border-white/10">
@@ -180,9 +228,9 @@ export default function Sidebar({
 
           <div className="flex gap-2 mb-8">
             {[
-              { id: 'osm', label: 'OSM' },
+              { id: 'grab', label: 'Grab' },
               { id: 'onemap', label: 'OneMap' },
-              { id: 'grab', label: 'Grab' }
+              { id: 'osm', label: 'OSM' }
             ].map(src => (
               <button 
                 key={src.id}
@@ -230,7 +278,8 @@ export default function Sidebar({
 
 
         {/* Content Area */}
-        <div className="px-10 pb-32">
+        <div className="sidebar-content-scroll custom-scrollbar">
+          <div className="px-10 pb-32">
           <div className="py-10 space-y-10">
             <AnimatePresence mode="wait">
                   <motion.div 
@@ -266,18 +315,18 @@ export default function Sidebar({
 
                     {/* INTELLIGENCE STATS LAYER */}
                     {stats && (
-                      <div className="grid grid-cols-3 gap-3">
+                      <div className="flex items-center justify-between p-6 glass-card border-white/5 bg-white/[0.02] divide-x divide-white/5">
                         {[
-                          { label: 'Food Spots', value: stats.food, icon: Flame, color: 'text-orange-500' },
+                          { label: 'Food', value: stats.food, icon: Flame, color: 'text-orange-500' },
                           { label: 'Deep Work', value: stats.cafes, icon: Clock, color: 'text-primary' },
-                          { label: 'Innov. Hubs', value: stats.hubs, icon: Zap, color: 'text-amber-500' }
+                          { label: 'Innov.', value: stats.hubs, icon: Zap, color: 'text-amber-500' }
                         ].map(stat => (
-                          <div key={stat.label} className="glass-card p-4 border-white/5 bg-white/[0.02] flex flex-col gap-1">
+                          <div key={stat.label} className="flex-1 flex flex-col items-center gap-1 px-2">
                              <div className={`flex items-center gap-2 ${stat.color}`}>
                                <stat.icon className="w-3 h-3" />
-                               <span className="text-xs font-black">{stat.value}</span>
+                               <span className="text-sm font-black">{stat.value}</span>
                              </div>
-                             <span className="text-[7px] font-black text-white/30 uppercase tracking-widest">{stat.label}</span>
+                             <span className="text-[7px] font-black text-white/30 uppercase tracking-widest text-center">{stat.label}</span>
                           </div>
                         ))}
                       </div>
@@ -291,7 +340,11 @@ export default function Sidebar({
                         </h3>
                         <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
                           {events.map(ev => (
-                            <div key={ev.id} className="min-w-[240px] glass-card p-5 space-y-3 bg-white/[0.03]">
+                            <div 
+                              key={ev.id} 
+                              onClick={() => onLocationSelect && onLocationSelect(neighbourhoodCoords.lat + (Math.random() - 0.5) * 0.005, neighbourhoodCoords.lng + (Math.random() - 0.5) * 0.005)}
+                              className="min-w-[240px] glass-card p-5 space-y-3 bg-white/[0.03] cursor-pointer hover:bg-white/[0.08] transition-all border-l-2 border-primary/40"
+                            >
                                <div className="flex justify-between items-start">
                                  <div className="px-2 py-0.5 bg-primary/20 rounded text-[8px] font-black text-primary uppercase">{ev.type}</div>
                                  <ArrowUpRight className="w-4 h-4 text-white/20" />
@@ -339,6 +392,7 @@ export default function Sidebar({
               </AnimatePresence>
             </div>
           </div>
+        </div>
 
         {/* DISCOVERY FEED - INTEGRATED */}
         <div className="p-6 bg-black/60 border-t border-white/10 backdrop-blur-3xl relative z-[60]">
@@ -346,30 +400,27 @@ export default function Sidebar({
              <div className="w-2 h-2 bg-primary rounded-full animate-ping shadow-[0_0_10px_#00b14f]" />
              <span className="text-[10px] font-black text-white uppercase tracking-[0.3em]">Discovery</span>
           </div>
-          <div className="space-y-3 pr-2 relative touch-pan-y">
-            <div className="flex items-start gap-3 p-3 rounded-xl bg-white/5 border border-white/5 animate-in fade-in slide-in-from-bottom-2 duration-700">
-               <Zap className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-               <div>
-                  <p className="text-[10px] font-bold text-white/90 leading-relaxed">
-                    {pois.length > 0 
-                      ? `${Math.max(3, Math.floor(pois.length / 3))} new high-vibe cafes detected in the last hour near ${neighbourhood}.` 
-                      : "Establishing secure link to urban intelligence layers..."}
-                  </p>
-                  <span className="text-[8px] font-black text-white/30 uppercase tracking-widest mt-1 block">Discovery Insight • Just Now</span>
-               </div>
-            </div>
-            
-            {pois.length > 3 && (
-              <div className="flex items-start gap-3 p-3 rounded-xl bg-white/5 border border-white/5 animate-in fade-in slide-in-from-bottom-2 duration-1000">
-                <Search className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
-                <div>
-                   <p className="text-[10px] font-bold text-white/90 leading-relaxed">
-                     Anomalous activity detected near {pois[0].name}. Vibe score peaking at {pois[0].vibe_score}%.
-                   </p>
-                   <span className="text-[8px] font-black text-white/30 uppercase tracking-widest mt-1 block">Anomaly Report • 2m ago</span>
-                </div>
-              </div>
-            )}
+          <div className="h-[70px] relative">
+            <AnimatePresence mode="wait">
+              <motion.div 
+                key={activeDiscoveryIndex}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.5 }}
+                className="flex items-start gap-3 p-3 rounded-xl bg-white/5 border border-white/5 absolute inset-0"
+              >
+                 <div className="mt-0.5 shrink-0">{discoveryItems[activeDiscoveryIndex]?.icon}</div>
+                 <div>
+                    <p className="text-[10px] font-bold text-white/90 leading-relaxed line-clamp-2">
+                      {discoveryItems[activeDiscoveryIndex]?.text}
+                    </p>
+                    <span className="text-[8px] font-black text-white/30 uppercase tracking-widest mt-1 block">
+                      {discoveryItems[activeDiscoveryIndex]?.label}
+                    </span>
+                 </div>
+              </motion.div>
+            </AnimatePresence>
           </div>
         </div>
       </motion.aside>
@@ -459,15 +510,15 @@ function POICard({ poi, isExpanded, onClick }: { poi: any, isExpanded: boolean, 
             {/* HERO IMAGE FOR EXPANDED VIEW */}
             {poi.photo_url && (
               <div className="w-full h-40 rounded-2xl overflow-hidden border border-white/10 relative">
-                 <img src={poi.photo_url} alt="Location Intelligence" className="w-full h-full object-cover" />
+                 <img src={poi.photo_url} alt="Location" className="w-full h-full object-cover" />
                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-4">
-                    <span className="text-[10px] font-black text-white uppercase tracking-widest">Verified Intelligence</span>
+                    <span className="text-[10px] font-black text-white uppercase tracking-widest">Verified</span>
                  </div>
               </div>
             )}
 
             <div className="space-y-2">
-              <span className="text-[8px] font-black text-primary uppercase tracking-[0.3em]">Vibe Intel</span>
+              <span className="text-[8px] font-black text-primary uppercase tracking-[0.3em]">Vibe</span>
               <p className="text-xs text-white/80 font-medium leading-relaxed italic">"{poi.desc}"</p>
             </div>
             

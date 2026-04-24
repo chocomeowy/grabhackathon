@@ -36,7 +36,7 @@ const getOneMapStyle = (token: string) => ({
 
 const GRAB_STYLE = '/api/map/style';
 
-export default function MapView({ center, poiLocation, source = 'osm' }: { 
+export default function MapView({ center, poiLocation, source = 'grab' }: { 
   center?: [number, number] | null,
   poiLocation?: [number, number] | null,
   source?: MapSource
@@ -90,6 +90,11 @@ export default function MapView({ center, poiLocation, source = 'osm' }: {
 
       mapInstance.current = map;
 
+      map.on('error', (e) => {
+        // Ignore tile loading errors (like 502s) to keep the map active
+        console.warn('Mapbox/MapLibre error ignored:', e.error?.message || e);
+      });
+
       map.on('load', () => {
         setTimeout(() => map.resize(), 100);
         setIsLoaded(true);
@@ -111,26 +116,17 @@ export default function MapView({ center, poiLocation, source = 'osm' }: {
         }
       });
 
-      if (source === 'grab') {
-        setTimeout(() => {
-          if (!isLoaded && mapInstance.current === map) {
-            isInitializing.current = false;
-            initMap('osm');
-          }
-        }, 4000);
-      } else {
-        setTimeout(() => {
-          if (!isLoaded && mapInstance.current === map) {
-            setIsLoaded(true);
-            isInitializing.current = false;
-          }
-        }, 2000);
-      }
+      // Simple load timeout as a safety net for the UI overlay
+      setTimeout(() => {
+        if (!isLoaded && mapInstance.current === map) {
+          setIsLoaded(true);
+          isInitializing.current = false;
+        }
+      }, 5000);
 
     } catch (err: any) {
       isInitializing.current = false;
-      if (source === 'grab') initMap('osm');
-      else setError(err.message);
+      setError(err.message);
     }
   };
 

@@ -27,7 +27,8 @@ export default function Sidebar({
   isCollapsed, 
   onToggleCollapse,
   mapSource,
-  onMapSourceChange
+  onMapSourceChange,
+  origin
 }: { 
   onLocationSelect?: (lat: number, lng: number) => void,
   onPoiSelect?: (lat: number, lng: number) => void,

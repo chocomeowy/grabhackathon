@@ -226,7 +226,7 @@ export default function Sidebar({
             <p className="text-xs text-white/50 font-medium">Build real-time decision engines on top of GrabMaps.</p>
           </div>
 
-          <div className="flex gap-2 mb-8">
+          <div className="flex gap-2 mb-6">
             {[
               { id: 'grab', label: 'Grab' },
               { id: 'onemap', label: 'OneMap' },
@@ -242,7 +242,7 @@ export default function Sidebar({
             ))}
           </div>
 
-          <div className="space-y-5">
+          <div className="space-y-4">
             <form onSubmit={(e) => { e.preventDefault(); handleSearch(); }} className="vibe-input-container relative flex items-center h-14 px-4 group">
               <Search className={`w-4 h-4 transition-colors ${isSearching ? 'text-primary' : 'text-muted-foreground'}`} />
               <input 
@@ -279,22 +279,47 @@ export default function Sidebar({
 
         {/* Content Area */}
         <div className="sidebar-content-scroll custom-scrollbar">
-          <div className="px-10 pb-32">
-          <div className="py-10 space-y-10">
-            <AnimatePresence mode="wait">
+          <div className="px-10 pt-8 pb-32 space-y-10">
+            {/* DISCOVERY FEED - MOVED TO TOP */}
+            <div className="p-6 bg-white/[0.03] border border-white/10 rounded-[2rem] backdrop-blur-3xl relative">
+              <div className="flex items-center gap-3 mb-4">
+                 <div className="w-2 h-2 bg-primary rounded-full animate-ping shadow-[0_0_10px_#00b14f]" />
+                 <span className="text-[10px] font-black text-white uppercase tracking-[0.3em]">Discovery</span>
+              </div>
+              <div className="h-[90px] relative">
+                <AnimatePresence mode="wait">
                   <motion.div 
-                    key="intel"
-                    initial={{ opacity: 0, y: 20 }}
+                    key={activeDiscoveryIndex}
+                    initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="space-y-8"
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.5 }}
+                    className="flex items-start gap-3 p-2 absolute inset-0"
                   >
-                    {errorDetails && (
-                      <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-start gap-3 text-red-400 text-xs">
-                        <AlertTriangle className="w-4 h-4 shrink-0" />
-                        <span>{errorDetails}</span>
-                      </div>
-                    )}
+                     <div className="mt-0.5 shrink-0">{discoveryItems[activeDiscoveryIndex]?.icon}</div>
+                     <div>
+                        <p className="text-[11px] font-bold text-white/90 leading-tight">
+                          {discoveryItems[activeDiscoveryIndex]?.text}
+                        </p>
+                        <span className="text-[8px] font-black text-white/30 uppercase tracking-widest mt-1 block">
+                          {discoveryItems[activeDiscoveryIndex]?.label}
+                        </span>
+                     </div>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+            </div>
 
+            <AnimatePresence mode="wait">
+              <motion.div 
+                key={neighbourhood}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="space-y-10"
+              >
+                {neighbourhood && (
+                  <div className="space-y-8">
                     {/* Hero Bento */}
                     {pois.length > 0 && (
                       <div className="p-8 glass-card border-primary/20 bg-gradient-to-br from-primary/10 to-transparent flex flex-col min-h-[160px] justify-between group">
@@ -315,7 +340,7 @@ export default function Sidebar({
 
                     {/* INTELLIGENCE STATS LAYER */}
                     {stats && (
-                      <div className="flex items-center justify-between p-6 glass-card border-white/5 bg-white/[0.02] divide-x divide-white/5">
+                      <div className="flex flex-row items-center justify-between p-6 glass-card border-white/5 bg-white/[0.02] divide-x divide-white/5">
                         {[
                           { label: 'Food', value: stats.food, icon: Flame, color: 'text-orange-500' },
                           { label: 'Deep Work', value: stats.cafes, icon: Clock, color: 'text-primary' },
@@ -338,7 +363,7 @@ export default function Sidebar({
                         <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-primary/60 flex items-center gap-2">
                           <Calendar className="w-4 h-4" /> Trending Near {neighbourhood}
                         </h3>
-                        <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
+                        <div className="flex flex-row gap-4 overflow-x-auto pb-4 no-scrollbar">
                           {events.map(ev => (
                             <div 
                               key={ev.id} 
@@ -381,48 +406,20 @@ export default function Sidebar({
                                   <Compass className="w-10 h-10 text-primary animate-pulse" />
                                </div>
                                <div className="space-y-2">
-                                  <h3 className="text-lg font-black text-white">Explore One North</h3>
+                                  <h3 className="text-lg font-black text-white">Explore {neighbourhood}</h3>
                                   <p className="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em] max-w-[200px]">Enter a vibe or use a preset to reveal real-time urban intel.</p>
                                </div>
                             </div>
                          )}
                        </div>
                     </div>
-                  </motion.div>
-              </AnimatePresence>
-            </div>
-          </div>
-        </div>
-
-        {/* DISCOVERY FEED - INTEGRATED */}
-        <div className="p-6 bg-black/60 border-t border-white/10 backdrop-blur-3xl relative z-[60]">
-          <div className="flex items-center gap-3 mb-4">
-             <div className="w-2 h-2 bg-primary rounded-full animate-ping shadow-[0_0_10px_#00b14f]" />
-             <span className="text-[10px] font-black text-white uppercase tracking-[0.3em]">Discovery</span>
-          </div>
-          <div className="h-[90px] relative">
-            <AnimatePresence mode="wait">
-              <motion.div 
-                key={activeDiscoveryIndex}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.5 }}
-                className="flex items-start gap-3 p-4 rounded-xl bg-white/5 border border-white/5 absolute inset-0"
-              >
-                 <div className="mt-0.5 shrink-0">{discoveryItems[activeDiscoveryIndex]?.icon}</div>
-                 <div>
-                    <p className="text-[10px] font-bold text-white/90 leading-relaxed">
-                      {discoveryItems[activeDiscoveryIndex]?.text}
-                    </p>
-                    <span className="text-[8px] font-black text-white/30 uppercase tracking-widest mt-1 block">
-                      {discoveryItems[activeDiscoveryIndex]?.label}
-                    </span>
-                 </div>
+                  </div>
+                )}
               </motion.div>
             </AnimatePresence>
           </div>
         </div>
+
       </motion.aside>
 
       <style jsx>{`

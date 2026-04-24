@@ -149,7 +149,7 @@ export default function MapView({ center, poiLocation, source = 'grab' }: {
           .addTo(map);
 
         if (!poiLocation) {
-          map.flyTo({ center, zoom: 8, speed: 1.2, essential: true });
+          map.flyTo({ center, zoom: 12, speed: 1.2, essential: true });
         }
       }
 

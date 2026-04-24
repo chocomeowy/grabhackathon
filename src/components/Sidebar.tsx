@@ -247,7 +247,8 @@ export default function Sidebar({
               <input 
                 type="text" 
                 placeholder="Where's the vibe?" 
-                className="bg-transparent border-none focus:ring-0 flex-1 py-3 text-base font-medium text-white !text-white placeholder:text-white/20"
+                className="bg-transparent border-none focus:ring-0 flex-1 py-3 text-base font-medium placeholder:text-white/20"
+                style={{ color: 'white' }}
                 value={query}
                 onChange={(e) => setQuery(e.target.value.replace(/[^a-zA-Z0-9\s]/g, ""))}
               />
@@ -289,18 +290,18 @@ export default function Sidebar({
                 <AnimatePresence mode="wait">
                   <motion.div 
                     key={activeDiscoveryIndex}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
+                    initial={{ opacity: 0, x: 10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -10 }}
                     transition={{ duration: 0.5 }}
-                    className="flex items-start gap-4 absolute inset-0 p-6"
+                    className="flex items-center gap-4 h-full w-full"
                   >
-                     <div className="mt-0.5 shrink-0">{discoveryItems[activeDiscoveryIndex]?.icon}</div>
-                     <div>
-                        <p className="text-[11px] font-bold text-white/90 leading-tight">
+                     <div className="shrink-0 text-primary">{discoveryItems[activeDiscoveryIndex]?.icon}</div>
+                     <div className="flex-1 min-w-0">
+                        <p className="text-[11px] font-bold text-white leading-tight mb-1">
                           {discoveryItems[activeDiscoveryIndex]?.text}
                         </p>
-                        <span className="text-[8px] font-black text-white/30 uppercase tracking-widest mt-1 block">
+                        <span className="text-[8px] font-black text-white/30 uppercase tracking-widest block">
                           {discoveryItems[activeDiscoveryIndex]?.label}
                         </span>
                      </div>

@@ -400,7 +400,7 @@ export default function Sidebar({
              <div className="w-2 h-2 bg-primary rounded-full animate-ping shadow-[0_0_10px_#00b14f]" />
              <span className="text-[10px] font-black text-white uppercase tracking-[0.3em]">Discovery</span>
           </div>
-          <div className="h-[70px] relative">
+          <div className="h-[90px] relative">
             <AnimatePresence mode="wait">
               <motion.div 
                 key={activeDiscoveryIndex}
@@ -408,11 +408,11 @@ export default function Sidebar({
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.5 }}
-                className="flex items-start gap-3 p-3 rounded-xl bg-white/5 border border-white/5 absolute inset-0"
+                className="flex items-start gap-3 p-4 rounded-xl bg-white/5 border border-white/5 absolute inset-0"
               >
                  <div className="mt-0.5 shrink-0">{discoveryItems[activeDiscoveryIndex]?.icon}</div>
                  <div>
-                    <p className="text-[10px] font-bold text-white/90 leading-relaxed line-clamp-2">
+                    <p className="text-[10px] font-bold text-white/90 leading-relaxed">
                       {discoveryItems[activeDiscoveryIndex]?.text}
                     </p>
                     <span className="text-[8px] font-black text-white/30 uppercase tracking-widest mt-1 block">

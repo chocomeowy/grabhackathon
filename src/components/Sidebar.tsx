@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { 
   Search, MapPin, Navigation, Loader2, Star, 
   Sparkles, Car, Footprints, TrainFront, 

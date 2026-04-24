@@ -550,8 +550,8 @@ function POICard({ poi, isExpanded, onClick, travelInfo }: {
             )}
 
             <div className="space-y-3">
-              <span className="text-[10px] font-black text-primary uppercase tracking-[0.3em]">Vibe Summary</span>
-              <p className="text-sm text-white/90 font-medium leading-relaxed italic">"{poi.desc}"</p>
+              <span className="text-xs font-black text-primary uppercase tracking-[0.3em]">Intelligence Briefing</span>
+              <p className="text-base text-white font-medium leading-relaxed italic">"{poi.desc}"</p>
             </div>
             
             <div className="grid grid-cols-2 gap-4">
@@ -570,9 +570,9 @@ function POICard({ poi, isExpanded, onClick, travelInfo }: {
             </div>
 
             <div className="p-4 bg-primary/5 rounded-2xl border border-primary/10">
-               <span className="text-[10px] font-black text-primary uppercase tracking-[0.3em] block mb-2">Pulse Breakdown</span>
+               <span className="text-xs font-black text-primary uppercase tracking-[0.3em] block mb-2">Vitality Lifecycle</span>
                <div className="space-y-3">
-                 <p className="text-[11px] font-bold text-white/70 leading-normal">
+                 <p className="text-[13px] font-bold text-white/80 leading-normal">
                    This spot is trending in the last 2 hours. Recommended for those seeking a <span className="text-primary">unique local experience</span>.
                  </p>
                  <div className="flex gap-1.5 h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
@@ -581,10 +581,10 @@ function POICard({ poi, isExpanded, onClick, travelInfo }: {
                     <div className="h-full bg-primary/80 w-[40%]" />
                     <div className="h-full bg-primary w-[30%]" />
                  </div>
-                 <div className="flex justify-between text-[9px] font-black text-white/40 uppercase tracking-tighter">
-                    <span>Morning</span>
-                    <span>Noon</span>
-                    <span className="text-primary">Peak Now</span>
+                 <div className="flex justify-between text-[10px] font-black text-white/30 uppercase tracking-tighter">
+                    <span>Morning Vibe</span>
+                    <span>Noon Pulse</span>
+                    <span className="text-primary font-black">Peak Activity</span>
                  </div>
                </div>
             </div>

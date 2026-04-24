@@ -106,7 +106,6 @@ export default function Sidebar({ onLocationSelect, onPoiSelect, isCollapsed, on
         }));
 
         setPois(enrichedPOIs);
-        setActiveTab('intel');
       }
     } catch (err: any) {
       console.error('SEARCH FATAL:', err);

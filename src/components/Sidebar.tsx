@@ -209,14 +209,20 @@ export default function Sidebar({
         let enrichedPOIs = [];
         const sourcePOIs = (!nearbyRes.error && nearbyRes.places) ? nearbyRes.places : places;
 
-        enrichedPOIs = sourcePOIs.map((poi: any, idx: number) => ({
-          ...poi,
-          photo_url: poi.photo_url || null,
-          distance_meters: poi.distance_meters || Math.floor(Math.random() * 800) + 100,
-          walking_time: poi.walking_time || Math.floor((Math.random() * 10) + 2),
-          desc: poi.desc || "Highly rated spot for " + searchTerms + " in the " + location.name + " area.",
-          vibe_score: 85 + Math.floor(Math.random() * 15)
-        }));
+        enrichedPOIs = sourcePOIs.map((poi: any, idx: number) => {
+          const baseRating = poi.rating || 4.2; // Default to a healthy 4.2 if rating is missing
+          // Calculate vibe score: 70% baseline + (Rating * 5) + slight variety based on index
+          const calculatedVibe = Math.floor(70 + (baseRating * 5) + (idx % 5));
+          
+          return {
+            ...poi,
+            photo_url: poi.photo_url || null,
+            distance_meters: poi.distance_meters || Math.floor(Math.random() * 800) + 100,
+            walking_time: poi.walking_time || Math.floor((Math.random() * 10) + 2),
+            desc: poi.desc || "Highly rated spot for " + searchTerms + " in the " + location.name + " area.",
+            vibe_score: Math.min(calculatedVibe, 99) // Cap at 99% for visual polish
+          };
+        });
 
         // Rank by Vibe Score
         enrichedPOIs.sort((a: any, b: any) => b.vibe_score - a.vibe_score);

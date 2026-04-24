@@ -157,7 +157,7 @@ export default function Sidebar({
       </button>
 
       <motion.aside 
-        className="h-full glass-sidebar flex flex-col relative shadow-2xl w-[420px]"
+        className="h-full glass-sidebar flex flex-col relative shadow-2xl w-[420px] overflow-y-auto custom-scrollbar no-scrollbar-on-mobile"
       >
         {/* COMPACT VIBRANT Header */}
         <div className="p-8 pb-6 shrink-0 bg-primary/20 backdrop-blur-xl border-b border-white/10">
@@ -229,8 +229,8 @@ export default function Sidebar({
         </div>
 
 
-        {/* Content Scroll Area - Unbreakable Scroll Engine */}
-        <div className="flex-1 overflow-y-auto custom-scrollbar px-10 pb-32">
+        {/* Content Area */}
+        <div className="px-10 pb-32">
           <div className="py-10 space-y-10">
             <AnimatePresence mode="wait">
                   <motion.div 
@@ -340,13 +340,13 @@ export default function Sidebar({
             </div>
           </div>
 
-        {/* LIVE INTELLIGENCE FEED */}
-        <div className="mt-auto p-6 bg-black/60 border-t border-white/10 backdrop-blur-3xl relative z-[60]">
+        {/* DISCOVERY FEED - INTEGRATED */}
+        <div className="p-6 bg-black/60 border-t border-white/10 backdrop-blur-3xl relative z-[60]">
           <div className="flex items-center gap-3 mb-4">
              <div className="w-2 h-2 bg-primary rounded-full animate-ping shadow-[0_0_10px_#00b14f]" />
              <span className="text-[10px] font-black text-white uppercase tracking-[0.3em]">Discovery</span>
           </div>
-          <div className="space-y-3 max-h-[200px] overflow-y-auto custom-scrollbar pr-2 relative touch-pan-y">
+          <div className="space-y-3 pr-2 relative touch-pan-y">
             <div className="flex items-start gap-3 p-3 rounded-xl bg-white/5 border border-white/5 animate-in fade-in slide-in-from-bottom-2 duration-700">
                <Zap className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                <div>

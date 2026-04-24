@@ -38,12 +38,13 @@ html, body {
 
 .sidebar-wrapper {
   z-index: 50;
-  width: 420px !important;
+  width: 420px;
   height: 100vh !important;
   max-height: 100vh !important;
   flex-shrink: 0 !important;
   position: relative !important;
   overflow: hidden !important;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .map-wrapper {

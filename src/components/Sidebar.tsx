@@ -126,8 +126,7 @@ export default function Sidebar({ onLocationSelect, onPoiSelect, isCollapsed, on
       </button>
 
       <motion.aside 
-        animate={{ width: isCollapsed ? 0 : 420, opacity: isCollapsed ? 0 : 1 }}
-        className="h-full glass-sidebar flex flex-col relative shadow-2xl"
+        className="h-full glass-sidebar flex flex-col relative shadow-2xl w-[420px]"
       >
         {/* COMPACT VIBRANT Header */}
         <div className="p-8 pb-6 shrink-0 bg-primary/20 backdrop-blur-xl border-b border-white/10">

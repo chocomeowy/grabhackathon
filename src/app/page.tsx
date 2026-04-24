@@ -23,8 +23,8 @@ export default function Home() {
     <main className="main-layout overflow-hidden bg-background">
       {/* Side Intelligence Panel */}
       <div 
-        className="sidebar-wrapper transition-all duration-500 ease-in-out" 
-        style={{ width: isCollapsed ? '0px' : '420px', opacity: isCollapsed ? 0 : 1 }}
+        className="sidebar-wrapper" 
+        style={{ width: isCollapsed ? '0px' : '420px', minWidth: isCollapsed ? '0px' : '420px', opacity: isCollapsed ? 0 : 1 }}
       >
         <Sidebar 
           onLocationSelect={handleLocationSelect} 

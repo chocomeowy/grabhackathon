@@ -293,7 +293,7 @@ export default function Sidebar({
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.5 }}
-                    className="flex items-start gap-4 absolute inset-0"
+                    className="flex items-start gap-4 absolute inset-0 p-6"
                   >
                      <div className="mt-0.5 shrink-0">{discoveryItems[activeDiscoveryIndex]?.icon}</div>
                      <div>

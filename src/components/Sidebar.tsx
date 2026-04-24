@@ -550,7 +550,7 @@ function POICard({ poi, isExpanded, onClick, travelInfo }: {
             )}
 
             <div className="space-y-3">
-              <span className="text-xs font-black text-primary uppercase tracking-[0.3em]">Intelligence Briefing</span>
+              <span className="text-xs font-black text-primary uppercase tracking-[0.3em]">Details</span>
               <p className="text-base text-white font-medium leading-relaxed italic">"{poi.desc}"</p>
             </div>
             
@@ -570,7 +570,7 @@ function POICard({ poi, isExpanded, onClick, travelInfo }: {
             </div>
 
             <div className="p-4 bg-primary/5 rounded-2xl border border-primary/10">
-               <span className="text-xs font-black text-primary uppercase tracking-[0.3em] block mb-2">Vitality Lifecycle</span>
+               <span className="text-xs font-black text-primary uppercase tracking-[0.3em] block mb-2">Vibe</span>
                <div className="space-y-3">
                  <p className="text-[13px] font-bold text-white/80 leading-normal">
                    This spot is trending in the last 2 hours. Recommended for those seeking a <span className="text-primary">unique local experience</span>.

@@ -12,7 +12,7 @@ export default function Home() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [mapSource, setMapSource] = useState<'grab' | 'osm' | 'onemap'>('grab');
   const [isMobile, setIsMobile] = useState(false);
-  const [origin, setOrigin] = useState<[number, number]>([103.8519, 1.2902]); // Default: City Hall
+  const [origin, setOrigin] = useState<[number, number]>([103.7875, 1.2995]); // Default: One North
 
   React.useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);

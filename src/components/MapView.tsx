@@ -35,16 +35,29 @@ export default function MapView({ center }: { center?: [number, number] | null }
   const [isFallback, setIsFallback] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const mapInstance = useRef<any>(null);
+  const markerInstance = useRef<any>(null);
   const isInitializing = useRef(false);
 
   useEffect(() => {
     if (mapInstance.current && center && isLoaded) {
+      // 1. Move the viewport
       mapInstance.current.flyTo({
         center: center,
         zoom: 16,
         speed: 1.2,
         essential: true
       });
+
+      // 2. Add/Move the "Pulse Arrow" Marker
+      if (markerInstance.current) {
+        markerInstance.current.setLngLat(center);
+      } else {
+        const el = document.createElement('div');
+        el.className = 'pulse-marker';
+        markerInstance.current = new maplibregl.Marker({ element: el })
+          .setLngLat(center)
+          .addTo(mapInstance.current);
+      }
     }
   }, [center, isLoaded]);
 

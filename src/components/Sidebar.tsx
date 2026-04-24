@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { 
   Search, MapPin, Navigation, Loader2, Star, 
   Sparkles, Car, Footprints, TrainFront, 
@@ -16,9 +16,9 @@ import { openai } from '@/lib/openai';
 type TransportMode = 'walking' | 'driving' | 'mrt';
 
 const TEMPLATES = [
-  { label: 'Local Food', query: 'what local recommended food to try' },
-  { label: 'Trending Events', query: 'trending in events to try and attend' },
-  { label: 'Chill Cafes', query: 'best chill cafes with wifi' }
+  { label: 'Late night supper', query: 'best late night supper and local food' },
+  { label: 'Quiet coffee spots', query: 'quiet cafes for deep work' },
+  { label: 'Innovation nodes', query: 'tech hubs and startup innovation spaces' }
 ];
 
 export default function Sidebar({ 
@@ -42,9 +42,31 @@ export default function Sidebar({
   const [pois, setPois] = useState<any[]>([]);
   const [events, setEvents] = useState<any[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
-  const [neighbourhood, setNeighbourhood] = useState('Singapore');
+  const [neighbourhood, setNeighbourhood] = useState('One North');
   const [errorDetails, setErrorDetails] = useState<string | null>(null);
   const [selectedPoiId, setSelectedPoiId] = useState<string | null>(null);
+
+  const stats = useMemo(() => {
+    if (!pois.length) return null;
+    const food = pois.filter(p => p.categories?.some((c: any) => 
+      c?.name?.toLowerCase().includes('food') || 
+      c?.name?.toLowerCase().includes('restaurant')
+    )).length;
+    
+    const cafes = pois.filter(p => 
+      p?.name?.toLowerCase().includes('cafe') || 
+      p?.name?.toLowerCase().includes('coffee') || 
+      p.categories?.some((c: any) => c?.name?.toLowerCase().includes('cafe'))
+    ).length;
+    
+    const hubs = pois.filter(p => p.categories?.some((c: any) => 
+      c?.name?.toLowerCase().includes('office') || 
+      c?.name?.toLowerCase().includes('innovation') || 
+      c?.name?.toLowerCase().includes('hub')
+    )).length;
+    
+    return { food, cafes, hubs, total: pois.length };
+  }, [pois]);
 
   const handleSearch = async (forcedQuery?: string) => {
     const searchTerms = forcedQuery || query;
@@ -139,7 +161,7 @@ export default function Sidebar({
       >
         {/* COMPACT VIBRANT Header */}
         <div className="p-8 pb-6 shrink-0 bg-primary/20 backdrop-blur-xl border-b border-white/10">
-          <div className="flex items-center gap-4 mb-8">
+          <div className="flex items-center gap-4 mb-4">
             <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center text-white shadow-[0_8px_30px_rgba(0,177,79,0.3)] -rotate-3 border border-white/20">
               <LayoutDashboard className="w-7 h-7" />
             </div>
@@ -147,22 +169,29 @@ export default function Sidebar({
               <h1 className="text-2xl font-black tracking-tighter text-white">
                 PulseMap <span className="text-primary">SG</span>
               </h1>
-              <div className="flex gap-2 mt-2">
-                {[
-                  { id: 'osm', label: 'OSM' },
-                  { id: 'onemap', label: 'OneMap' },
-                  { id: 'grab', label: 'Grab' }
-                ].map(src => (
-                  <button 
-                    key={src.id}
-                    onClick={() => onMapSourceChange(src.id as any)}
-                    className={`px-2 py-0.5 rounded text-[7px] font-black uppercase tracking-widest border transition-all ${mapSource === src.id ? 'bg-primary text-white border-primary shadow-[0_0_10px_rgba(0,177,79,0.4)]' : 'bg-white/5 text-white/40 border-white/10 hover:border-white/20'}`}
-                  >
-                    {src.label}
-                  </button>
-                ))}
-              </div>
+              <p className="text-[10px] font-black text-white/40 uppercase tracking-[0.4em]">Intelligence Engine</p>
             </div>
+          </div>
+
+          <div className="mb-8 space-y-2">
+            <h2 className="text-lg font-black text-white leading-tight">Explore neighbourhoods by vibe.</h2>
+            <p className="text-xs text-white/50 font-medium">Build real-time decision engines on top of GrabMaps.</p>
+          </div>
+
+          <div className="flex gap-2 mb-8">
+            {[
+              { id: 'osm', label: 'OSM' },
+              { id: 'onemap', label: 'OneMap' },
+              { id: 'grab', label: 'Grab' }
+            ].map(src => (
+              <button 
+                key={src.id}
+                onClick={() => onMapSourceChange(src.id as any)}
+                className={`px-3 py-1 rounded-lg text-[8px] font-black uppercase tracking-widest border transition-all ${mapSource === src.id ? 'bg-primary text-white border-primary shadow-[0_0_15px_rgba(0,177,79,0.4)]' : 'bg-white/5 text-white/30 border-white/10 hover:border-white/20'}`}
+              >
+                {src.label}
+              </button>
+            ))}
           </div>
 
           <div className="space-y-5">
@@ -235,6 +264,25 @@ export default function Sidebar({
                       </div>
                     )}
 
+                    {/* INTELLIGENCE STATS LAYER */}
+                    {stats && (
+                      <div className="grid grid-cols-3 gap-3">
+                        {[
+                          { label: 'Food Spots', value: stats.food, icon: Flame, color: 'text-orange-500' },
+                          { label: 'Deep Work', value: stats.cafes, icon: Clock, color: 'text-primary' },
+                          { label: 'Innov. Hubs', value: stats.hubs, icon: Zap, color: 'text-amber-500' }
+                        ].map(stat => (
+                          <div key={stat.label} className="glass-card p-4 border-white/5 bg-white/[0.02] flex flex-col gap-1">
+                             <div className={`flex items-center gap-2 ${stat.color}`}>
+                               <stat.icon className="w-3 h-3" />
+                               <span className="text-xs font-black">{stat.value}</span>
+                             </div>
+                             <span className="text-[7px] font-black text-white/30 uppercase tracking-widest">{stat.label}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
                     {/* Hot Events Section */}
                     {events.length > 0 && (
                       <div className="space-y-4">
@@ -275,7 +323,15 @@ export default function Sidebar({
                             }}
                            />
                          )) : (
-                           <EmptyState text="Enter a vibe to reveal urban intel..." />
+                            <div className="py-20 flex flex-col items-center text-center gap-6 animate-in fade-in zoom-in duration-500">
+                               <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center border border-primary/20">
+                                  <Compass className="w-10 h-10 text-primary animate-pulse" />
+                               </div>
+                               <div className="space-y-2">
+                                  <h3 className="text-lg font-black text-white">Explore One North</h3>
+                                  <p className="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em] max-w-[200px]">Enter a vibe or use a preset to reveal real-time urban intel.</p>
+                               </div>
+                            </div>
                          )}
                        </div>
                     </div>

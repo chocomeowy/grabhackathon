@@ -7,7 +7,7 @@ import Sidebar from "@/components/Sidebar";
 import MapView from "@/components/MapView";
 
 export default function Home() {
-  const [mapCenter, setMapCenter] = useState<[number, number] | null>(null);
+  const [mapCenter, setMapCenter] = useState<[number, number] | null>([103.7875, 1.2995]); // One North Default
   const [poiLocation, setPoiLocation] = useState<[number, number] | null>(null);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [mapSource, setMapSource] = useState<'grab' | 'osm' | 'onemap'>('osm');

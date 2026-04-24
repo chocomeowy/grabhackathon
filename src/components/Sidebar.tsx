@@ -549,30 +549,29 @@ function POICard({ poi, isExpanded, onClick, travelInfo }: {
               </div>
             )}
 
-            <div className="space-y-2">
-              <span className="text-[8px] font-black text-primary uppercase tracking-[0.3em]">Vibe</span>
-              <p className="text-xs text-white/80 font-medium leading-relaxed italic">"{poi.desc}"</p>
+            <div className="space-y-3">
+              <span className="text-[10px] font-black text-primary uppercase tracking-[0.3em]">Vibe Summary</span>
+              <p className="text-sm text-white/90 font-medium leading-relaxed italic">"{poi.desc}"</p>
             </div>
             
-            <div className="grid grid-cols-2 gap-4">
               <div className="bg-white/5 p-4 rounded-2xl border border-white/5">
-                 <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest block mb-2">Navigation</span>
-                 <div className="text-xs font-black text-white flex items-center gap-2">
-                   <Footprints className="w-4 h-4 text-primary" /> {travelInfo.time} ({travelInfo.distance})
+                 <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest block mb-2">Navigation</span>
+                 <div className="text-sm font-black text-white flex items-center gap-2">
+                   <Footprints className="w-5 h-5 text-primary" /> {travelInfo.time} ({travelInfo.distance})
                  </div>
               </div>
               <div className="bg-white/5 p-4 rounded-2xl border border-white/5">
-                 <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest block mb-2">Activity</span>
-                 <div className="text-xs font-black text-white flex items-center gap-2">
-                   <TrendingUp className="w-4 h-4 text-primary" /> High Pulse
+                 <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest block mb-2">Activity</span>
+                 <div className="text-sm font-black text-white flex items-center gap-2">
+                   <TrendingUp className="w-5 h-5 text-primary" /> High Pulse
                  </div>
               </div>
             </div>
 
             <div className="p-4 bg-primary/5 rounded-2xl border border-primary/10">
-               <span className="text-[8px] font-black text-primary uppercase tracking-[0.3em] block mb-2">Pulse Breakdown</span>
+               <span className="text-[10px] font-black text-primary uppercase tracking-[0.3em] block mb-2">Pulse Breakdown</span>
                <div className="space-y-3">
-                 <p className="text-[9px] font-bold text-white/60 leading-normal">
+                 <p className="text-[11px] font-bold text-white/70 leading-normal">
                    This spot is trending in the last 2 hours. Recommended for those seeking a <span className="text-primary">unique local experience</span>.
                  </p>
                  <div className="flex gap-1.5 h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
@@ -581,7 +580,7 @@ function POICard({ poi, isExpanded, onClick, travelInfo }: {
                     <div className="h-full bg-primary/80 w-[40%]" />
                     <div className="h-full bg-primary w-[30%]" />
                  </div>
-                 <div className="flex justify-between text-[7px] font-black text-white/30 uppercase tracking-tighter">
+                 <div className="flex justify-between text-[9px] font-black text-white/40 uppercase tracking-tighter">
                     <span>Morning</span>
                     <span>Noon</span>
                     <span className="text-primary">Peak Now</span>

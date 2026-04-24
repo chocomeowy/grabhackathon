@@ -5,22 +5,22 @@ import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { MapPin, AlertCircle, RefreshCw, Layers, ShieldAlert } from 'lucide-react';
 
-// OneMap Singapore Raster (Official Authority Map)
+// Midnight Premium Raster (Ultra-Reliable Fallback)
 const FALLBACK_STYLE = {
   version: 8,
   sources: {
-    'onemap': {
+    'carto': {
       type: 'raster',
-      tiles: ['https://maps-a.onemap.sg/v3/Default/{z}/{x}/{y}.png'],
+      tiles: ['https://basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}.png'],
       tileSize: 256,
-      attribution: '<img src="https://www.onemap.gov.sg/docs/maps/images/oneMap64.png" style="height:20px;width:20px;"/> OneMap Singapore'
+      attribution: '&copy; CartoDB'
     }
   },
   layers: [
     {
-      id: 'onemap',
+      id: 'carto',
       type: 'raster',
-      source: 'onemap',
+      source: 'carto',
       minzoom: 0,
       maxzoom: 19
     }
@@ -101,7 +101,7 @@ export default function MapView({ center }: { center?: [number, number] | null }
 
       map.on('error', (e: any) => {
         if (!useFallback && !isFallback && !isLoaded) {
-           console.error('MAP: Grab failed. Hot-swapping to OneMap Authority...');
+           console.error('MAP: Grab failed. Activating Midnight Intelligence Layer...');
            isInitializing.current = false;
            initMap(true);
         }
@@ -111,7 +111,7 @@ export default function MapView({ center }: { center?: [number, number] | null }
       if (!useFallback) {
         setTimeout(() => {
           if (!isLoaded && mapInstance.current === map) {
-            console.warn('MAP: Grab Timeout. Switching to OneMap...');
+            console.warn('MAP: Grab Timeout. Switching to Midnight Layer...');
             isInitializing.current = false;
             initMap(true);
           }
@@ -145,9 +145,9 @@ export default function MapView({ center }: { center?: [number, number] | null }
 
       {isFallback && (
         <div className="absolute top-6 left-1/2 -translate-x-1/2 z-50">
-           <div className="px-5 py-2.5 bg-blue-600/20 backdrop-blur-3xl border border-blue-500/40 rounded-full flex items-center gap-3 shadow-[0_0_30px_rgba(59,130,246,0.3)]">
-             <div className="w-2 h-2 bg-blue-500 rounded-full animate-ping" />
-             <span className="text-[10px] font-black text-blue-400 uppercase tracking-[0.2em]">OneMap Authority Active</span>
+           <div className="px-5 py-2.5 bg-purple-600/20 backdrop-blur-3xl border border-purple-500/40 rounded-full flex items-center gap-3 shadow-[0_0_30px_rgba(139,92,246,0.3)]">
+             <div className="w-2 h-2 bg-purple-500 rounded-full animate-ping" />
+             <span className="text-[10px] font-black text-purple-400 uppercase tracking-[0.2em]">Midnight Intelligence Layer Active</span>
            </div>
         </div>
       )}

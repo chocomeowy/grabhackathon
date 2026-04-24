@@ -137,7 +137,7 @@ export default function Sidebar({ onLocationSelect }: { onLocationSelect?: (lat:
               <h1 className="text-2xl font-black tracking-tighter text-white">
                 PulseMap <span className="text-primary">SG</span>
               </h1>
-              <p className="text-[8px] font-black text-white/40 uppercase tracking-[0.4em]">Intelligence Engine</p>
+              <p className="text-[8px] font-black text-white/40 uppercase tracking-[0.4em]">Pulse Discovery</p>
             </div>
           </div>
 
@@ -149,7 +149,7 @@ export default function Sidebar({ onLocationSelect }: { onLocationSelect?: (lat:
                 placeholder="Where's the vibe?" 
                 className="vibe-input flex-1 h-full ml-3 text-sm"
                 value={query}
-                onChange={(e) => setQuery(e.target.value)}
+                onChange={(e) => setQuery(e.target.value.replace(/[^a-zA-Z0-9\s]/g, ""))}
               />
               <button 
                 type="submit"
@@ -175,19 +175,11 @@ export default function Sidebar({ onLocationSelect }: { onLocationSelect?: (lat:
           </div>
         </div>
 
-        {/* Global Tabs */}
-        <div className="px-10 py-6 flex shrink-0">
-          <div className="flex w-full bg-white/5 p-1.5 rounded-2xl border border-white/5">
-            <GlobalTab active={activeTab === 'intel'} onClick={() => setActiveTab('intel')} label="Intel" icon={<Compass className="w-4 h-4" />} />
-            <GlobalTab active={activeTab === 'itinerary'} onClick={() => setActiveTab('itinerary')} label="Plan" icon={<Navigation className="w-4 h-4" />} />
-          </div>
-        </div>
 
         {/* Content Scroll Area - Unbreakable Scroll Engine */}
         <div className="sidebar-content-scroll custom-scrollbar px-10 pb-32">
           <div className="py-10 space-y-10">
             <AnimatePresence mode="wait">
-                {activeTab === 'intel' ? (
                   <motion.div 
                     key="intel"
                     initial={{ opacity: 0, y: 20 }}
@@ -261,20 +253,6 @@ export default function Sidebar({ onLocationSelect }: { onLocationSelect?: (lat:
                        </div>
                     </div>
                   </motion.div>
-                ) : (
-                  <motion.div key="itinerary" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-                     <div className="p-8 bg-primary/10 rounded-[2.5rem] border border-primary/20 space-y-4">
-                        <div className="flex items-center gap-3 text-primary">
-                           <Sparkles className="w-6 h-6 fill-current" />
-                           <span className="text-xl font-black tracking-tight">AI Sequence</span>
-                        </div>
-                        <p className="text-xs text-muted-foreground font-bold leading-relaxed">
-                           Crafting the perfect vibe journey for <span className="text-white">{neighbourhood}</span>.
-                        </p>
-                     </div>
-                     <EmptyState text="Itinerary builder incoming..." />
-                  </motion.div>
-                )}
               </AnimatePresence>
             </div>
           </div>
@@ -299,13 +277,6 @@ export default function Sidebar({ onLocationSelect }: { onLocationSelect?: (lat:
   );
 }
 
-function GlobalTab({ active, onClick, label, icon }: { active: boolean, onClick: () => void, label: string, icon: React.ReactNode }) {
-  return (
-    <button onClick={onClick} className={`flex-1 flex items-center justify-center gap-2 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${active ? 'bg-primary text-white shadow-lg' : 'text-muted-foreground hover:text-white'}`}>
-      {icon} {label}
-    </button>
-  );
-}
 
 function POICard({ poi, isExpanded, onClick }: { poi: any, isExpanded: boolean, onClick: () => void }) {
   return (

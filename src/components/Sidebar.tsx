@@ -342,11 +342,11 @@ export default function Sidebar({
 
         {/* LIVE INTELLIGENCE FEED */}
         <div className="mt-auto p-6 bg-black/40 border-t border-white/5 backdrop-blur-2xl">
-          <div className="flex items-center gap-3 mb-3">
+          <div className="flex items-center gap-3 mb-4">
              <div className="w-2 h-2 bg-primary rounded-full animate-ping shadow-[0_0_10px_#00b14f]" />
-             <span className="text-[10px] font-black text-white uppercase tracking-[0.3em]">Neural Discovery Feed</span>
+             <span className="text-[10px] font-black text-white uppercase tracking-[0.3em]">Discovery</span>
           </div>
-          <div className="space-y-3">
+          <div className="space-y-3 max-h-[160px] overflow-y-auto custom-scrollbar pr-2">
             <div className="flex items-start gap-3 p-3 rounded-xl bg-white/5 border border-white/5 animate-in fade-in slide-in-from-bottom-2 duration-700">
                <Zap className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                <div>

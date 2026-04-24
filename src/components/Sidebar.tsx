@@ -327,8 +327,8 @@ function POICard({ poi, isExpanded, onClick }: { poi: any, isExpanded: boolean, 
           </div>
           <p className="text-[10px] font-bold text-muted-foreground truncate">{poi.formatted_address}</p>
           <div className="flex flex-wrap gap-1 mt-2">
-             {poi.categories?.slice(0, 2).map((c: any) => (
-               <span key={c.name} className="px-1.5 py-0.5 bg-white/5 rounded-md text-[7px] font-black text-white/40 uppercase">{c.name}</span>
+             {poi.categories?.slice(0, 2).map((c: any, idx: number) => (
+               <span key={`${c.name}-${idx}`} className="px-1.5 py-0.5 bg-white/5 rounded-md text-[7px] font-black text-white/40 uppercase">{c.name}</span>
              ))}
           </div>
         </div>

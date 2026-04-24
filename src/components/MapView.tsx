@@ -5,22 +5,22 @@ import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { MapPin, AlertCircle, RefreshCw, Layers, ShieldAlert } from 'lucide-react';
 
-// Midnight Premium Raster (Ultra-Reliable Fallback)
+// Standard OpenStreetMap (Global Resilience Fallback)
 const FALLBACK_STYLE = {
   version: 8,
   sources: {
-    'carto': {
+    'osm': {
       type: 'raster',
-      tiles: ['https://basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}.png'],
+      tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
       tileSize: 256,
-      attribution: '&copy; CartoDB'
+      attribution: '&copy; OpenStreetMap contributors'
     }
   },
   layers: [
     {
-      id: 'carto',
+      id: 'osm',
       type: 'raster',
-      source: 'carto',
+      source: 'osm',
       minzoom: 0,
       maxzoom: 19
     }

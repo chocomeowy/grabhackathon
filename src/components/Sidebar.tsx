@@ -283,7 +283,6 @@ export default function Sidebar({
               </AnimatePresence>
             </div>
           </div>
-        </div>
 
         {/* LIVE INTELLIGENCE FEED */}
         <div className="mt-auto p-6 bg-black/40 border-t border-white/5 backdrop-blur-2xl">

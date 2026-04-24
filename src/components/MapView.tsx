@@ -46,15 +46,23 @@ export default function MapView({ center }: { center?: [number, number] | null }
   const isInitializing = useRef(false);
 
   const initMap = async (source: MapSource) => {
-    if (!mapRef.current || isInitializing.current) return;
+    if (!mapRef.current) return;
     
+    // Force reset initialization lock for manual switches
     isInitializing.current = true;
     setIsLoaded(false);
     setCurrentSource(source);
+    setError(null);
+
+    console.log(`MAP: Initializing ${source.toUpperCase()}...`);
 
     if (mapInstance.current) {
-      try { mapInstance.current.remove(); } catch (e) {}
-      mapInstance.current = null;
+      try { 
+        mapInstance.current.remove(); 
+        mapInstance.current = null;
+      } catch (e) {
+        console.warn('MAP: Cleanup error', e);
+      }
     }
 
     try {
@@ -71,6 +79,7 @@ export default function MapView({ center }: { center?: [number, number] | null }
         center: [103.851959, 1.290270],
         zoom: 13,
         pitch: source === 'grab' ? 45 : 0,
+        renderWorldCopies: false,
         transformRequest: (url) => {
           if (url.includes('grab.com') || url.includes('/api/map/assets')) {
             return { url, headers: { 'Authorization': `Bearer ${grabKey}` } };
@@ -82,12 +91,13 @@ export default function MapView({ center }: { center?: [number, number] | null }
       mapInstance.current = map;
 
       map.on('load', () => {
+        console.log(`MAP: ${source.toUpperCase()} Loaded Successfully.`);
         map.resize();
         setIsLoaded(true);
         isInitializing.current = false;
         
-        // Re-add marker if center exists
         if (center) {
+           if (markerInstance.current) markerInstance.current.remove();
            const el = document.createElement('div');
            el.className = 'pulse-marker';
            markerInstance.current = new maplibregl.Marker({ element: el })
@@ -97,23 +107,36 @@ export default function MapView({ center }: { center?: [number, number] | null }
       });
 
       map.on('error', (e: any) => {
+        console.error(`MAP ${source.toUpperCase()} ERROR:`, e);
         if (source === 'grab' && !isLoaded) {
-           console.error('MAP: Grab failed. Auto-switching to OSM...');
+           console.warn('MAP: Grab fatal error. Auto-failing to OSM...');
            isInitializing.current = false;
            initMap('osm');
         }
       });
 
+      // Rapid failover for Grab only
       if (source === 'grab') {
         setTimeout(() => {
-          if (!isLoaded && mapInstance.current === map) {
+          if (!isLoaded && mapInstance.current === map && currentSource === 'grab') {
+            console.warn('MAP: Grab timeout. Auto-failing to OSM...');
             isInitializing.current = false;
             initMap('osm');
           }
         }, 4000);
+      } else {
+        // For OSM/OneMap, force "loaded" after 2s if no error
+        setTimeout(() => {
+          if (!isLoaded && mapInstance.current === map) {
+            console.log('MAP: Forcing Loaded state for raster layer.');
+            setIsLoaded(true);
+            isInitializing.current = false;
+          }
+        }, 2000);
       }
 
     } catch (err: any) {
+      console.error('MAP: Constructor fatal', err);
       isInitializing.current = false;
       if (source === 'grab') initMap('osm');
       else setError(err.message);

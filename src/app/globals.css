@@ -1,0 +1,129 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+
+:root {
+  --background: #050505;
+  --foreground: #ffffff;
+  
+  --primary: #00b14f; /* Grab Green */
+  --primary-glow: rgba(0, 177, 79, 0.3);
+  
+  --secondary: #121214;
+  --muted: #1a1a1c;
+  --muted-foreground: #71717a;
+  
+  --accent-purple: #8b5cf6;
+  --accent-blue: #3b82f6;
+  
+  --radius: 1.5rem;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--background);
+  color: var(--foreground);
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Glassmorphism Core */
+.glass-sidebar {
+  background: rgba(10, 10, 12, 0.8);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Input Fix - Ensuring it's NEVER white */
+.vibe-input-container {
+  background: #1a1a1c !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1.25rem;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+  transition: all 0.2s ease;
+}
+
+.vibe-input-container:focus-within {
+  border-color: var(--primary);
+  box-shadow: 0 0 20px var(--primary-glow), inset 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.vibe-input {
+  background: transparent !important;
+  color: white !important;
+  font-weight: 700;
+  outline: none;
+}
+
+.vibe-input::placeholder {
+  color: rgba(255, 255, 255, 0.2);
+}
+
+/* Scrollbar */
+.custom-scrollbar::-webkit-scrollbar { width: 4px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+
+/* Utilities */
+.btn-primary {
+  background: var(--primary);
+  color: white;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-radius: 1.25rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 15px var(--primary-glow);
+}
+
+.btn-primary:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 25px var(--primary-glow);
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+/* Responsiveness */
+.main-layout {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+}
+
+.sidebar-wrapper {
+  z-index: 50;
+  position: relative;
+}
+
+.map-wrapper {
+  flex: 1;
+  position: relative;
+  background: #0a0a0c;
+}
+
+@media (max-width: 768px) {
+  .main-layout { flex-direction: column-reverse; }
+  .sidebar-wrapper { width: 100%; height: 60vh; }
+  .map-wrapper { height: 40vh; }
+}

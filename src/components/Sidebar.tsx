@@ -215,8 +215,11 @@ export default function Sidebar({
           distance_meters: poi.distance_meters || Math.floor(Math.random() * 800) + 100,
           walking_time: poi.walking_time || Math.floor((Math.random() * 10) + 2),
           desc: poi.desc || "Highly rated spot for " + searchTerms + " in the " + location.name + " area.",
-          vibe_score: 90 + Math.floor(Math.random() * 10)
+          vibe_score: 85 + Math.floor(Math.random() * 15)
         }));
+
+        // Rank by Vibe Score
+        enrichedPOIs.sort((a: any, b: any) => b.vibe_score - a.vibe_score);
 
         setPois(enrichedPOIs);
         

@@ -137,5 +137,10 @@ html, body {
 
 @media (max-width: 768px) {
   .main-layout { flex-direction: column-reverse !important; }
-  .sidebar-wrapper, .map-wrapper { width: 100% !important; height: 50vh !important; }
+  .sidebar-wrapper { 
+    width: 100% !important; 
+    height: 50vh !important; 
+    transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+  .map-wrapper { width: 100% !important; height: 50vh !important; }
 }

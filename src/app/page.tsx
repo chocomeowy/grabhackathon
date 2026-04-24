@@ -11,6 +11,14 @@ export default function Home() {
   const [poiLocation, setPoiLocation] = useState<[number, number] | null>(null);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [mapSource, setMapSource] = useState<'grab' | 'osm' | 'onemap'>('grab');
+  const [isMobile, setIsMobile] = useState(false);
+
+  React.useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const handleLocationSelect = (lat: number, lng: number) => {
     setMapCenter([lng, lat]);
@@ -26,7 +34,12 @@ export default function Home() {
       {/* Side Intelligence Panel */}
       <div 
         className="sidebar-wrapper" 
-        style={{ width: isCollapsed ? '0px' : '420px', minWidth: isCollapsed ? '0px' : '420px' }}
+        style={{ 
+          width: isMobile ? '100%' : (isCollapsed ? '0px' : '420px'),
+          minWidth: isMobile ? '100%' : (isCollapsed ? '0px' : '420px'),
+          height: isMobile ? (isCollapsed ? '40px' : '50vh') : '100vh',
+          transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)'
+        }}
       >
         <Sidebar 
           onLocationSelect={handleLocationSelect} 

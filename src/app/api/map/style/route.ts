@@ -4,36 +4,29 @@ export async function GET() {
   const apiKey = process.env.NEXT_PUBLIC_GRABMAPS_API_KEY || process.env.GRABMAPS_API_KEY;
   
   if (!apiKey) {
-    console.error('STYLE PROXY ERROR: API Key missing in environment.');
     return NextResponse.json({ error: 'API Key missing' }, { status: 500 });
   }
 
   try {
     const styleUrl = 'https://maps.grab.com/api/style.json?theme=dark';
-    
-    console.log('STYLE PROXY: Fetching Grab style...');
     const response = await fetch(styleUrl, {
       headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'X-Grab-API-Key': apiKey // Adding as fallback for some Grab systems
+        'Authorization': `Bearer ${apiKey}`
       }
     });
 
-    if (!response.ok) {
-      const err = await response.text();
-      console.error(`STYLE PROXY FATAL (${response.status}):`, err);
-      throw new Error(`Grab Style API returned ${response.status}`);
-    }
+    if (!response.ok) throw new Error(`Grab Style API returned ${response.status}`);
     
-    const contentType = response.headers.get('content-type');
-    if (!contentType || !contentType.includes('application/json')) {
-      const text = await response.text();
-      console.error('STYLE PROXY: Expected JSON, got:', text);
-      throw new Error('Grab Style API returned invalid format');
-    }
+    let styleText = await response.text();
+    
+    // REWRITE URLS to use our proxy
+    // 1. Vector Tiles: https://maps.grab.com/maps/tiles/v2/vector/ -> /api/map/assets/vector/
+    styleText = styleText.replace(/https:\/\/maps\.grab\.com\/maps\/tiles\/v2\/vector\//g, '/api/map/assets/vector/');
+    
+    // 2. Glyphs/Sprites: https://maps.grab.com/maps/tiles/v1/ -> /api/map/assets/
+    styleText = styleText.replace(/https:\/\/maps\.grab\.com\/maps\/tiles\/v1\//g, '/api/map/assets/');
 
-    const style = await response.json();
-    console.log('STYLE PROXY: Success. Returning dark theme.');
+    const style = JSON.parse(styleText);
     
     return NextResponse.json(style, {
       headers: {

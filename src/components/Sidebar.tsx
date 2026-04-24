@@ -238,9 +238,8 @@ export default function Sidebar({
             </h1>
           </div>
 
-          <div className="mb-8 space-y-2">
+          <div className="mb-8">
             <h2 className="text-lg font-black text-white leading-tight">Explore neighbourhoods by vibe.</h2>
-            <p className="text-xs text-white/50 font-medium">Build real-time decision engines on top of GrabMaps.</p>
           </div>
 
 
@@ -301,12 +300,12 @@ export default function Sidebar({
                     transition={{ duration: 0.5 }}
                     className="flex items-center gap-4 h-full w-full"
                   >
-                     <div className="shrink-0 text-primary">{discoveryItems[activeDiscoveryIndex]?.icon}</div>
+                     <div className="shrink-0 text-primary scale-125">{discoveryItems[activeDiscoveryIndex]?.icon}</div>
                      <div className="flex-1 min-w-0">
-                        <p className="text-[11px] font-bold text-white leading-tight mb-1">
+                        <p className="text-sm font-bold text-white leading-tight mb-1">
                           {discoveryItems[activeDiscoveryIndex]?.text}
                         </p>
-                        <span className="text-[8px] font-black text-white/30 uppercase tracking-widest block">
+                        <span className="text-[10px] font-black text-white/40 uppercase tracking-widest block">
                           {discoveryItems[activeDiscoveryIndex]?.label}
                         </span>
                      </div>

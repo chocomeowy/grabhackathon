@@ -209,16 +209,13 @@ export default function Sidebar({
       >
         {/* COMPACT VIBRANT Header */}
         <div className="p-8 pb-6 shrink-0 bg-primary/20 backdrop-blur-xl border-b border-white/10">
-          <div className="flex items-center gap-4 mb-4">
-            <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center text-white shadow-[0_8px_30px_rgba(0,177,79,0.3)] -rotate-3 border border-white/20">
-              <LayoutDashboard className="w-7 h-7" />
+          <div className="flex flex-row items-center gap-4 mb-8">
+            <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white shadow-[0_4px_20px_rgba(0,177,79,0.4)] border border-white/10 shrink-0">
+              <LayoutDashboard className="w-5 h-5" />
             </div>
-            <div className="flex-1">
-              <h1 className="text-2xl font-black tracking-tighter text-white">
-                PulseMap <span className="text-primary">SG</span>
-              </h1>
-              <p className="text-[10px] font-black text-white/40 uppercase tracking-[0.4em]">Intelligence Engine</p>
-            </div>
+            <h1 className="text-2xl font-black tracking-tighter text-white leading-none">
+              PulseMap <span className="text-primary">SG</span>
+            </h1>
           </div>
 
           <div className="mb-8 space-y-2">
@@ -235,7 +232,7 @@ export default function Sidebar({
               <button 
                 key={src.id}
                 onClick={() => onMapSourceChange(src.id as any)}
-                className={`px-3 py-1 rounded-lg text-[8px] font-black uppercase tracking-widest border transition-all ${mapSource === src.id ? 'bg-primary text-white border-primary shadow-[0_0_15px_rgba(0,177,79,0.4)]' : 'bg-white/5 text-white/30 border-white/10 hover:border-white/20'}`}
+                className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest border transition-all ${mapSource === src.id ? 'bg-primary text-white border-primary shadow-[0_0_15px_rgba(0,177,79,0.4)]' : 'bg-white/5 text-white/30 border-white/10 hover:border-white/20'}`}
               >
                 {src.label}
               </button>
@@ -243,19 +240,21 @@ export default function Sidebar({
           </div>
 
           <div className="space-y-4">
-            <form onSubmit={(e) => { e.preventDefault(); handleSearch(); }} className="vibe-input-container relative flex items-center h-14 px-4 group">
-              <Search className={`w-4 h-4 transition-colors ${isSearching ? 'text-primary' : 'text-muted-foreground'}`} />
+            <form onSubmit={(e) => { e.preventDefault(); handleSearch(); }} className="bg-white/5 border border-white/10 rounded-2xl flex items-center p-2 group transition-all hover:bg-white/[0.08] focus-within:ring-2 focus-within:ring-primary/40">
+              <div className="pl-3 pr-2">
+                <Search className={`w-5 h-5 transition-colors ${isSearching ? 'text-primary' : 'text-muted-foreground'}`} />
+              </div>
               <input 
                 type="text" 
                 placeholder="Where's the vibe?" 
-                className="vibe-input flex-1 h-full ml-3 text-sm"
+                className="bg-transparent border-none focus:ring-0 flex-1 py-3 text-base font-medium text-white placeholder:text-white/20"
                 value={query}
                 onChange={(e) => setQuery(e.target.value.replace(/[^a-zA-Z0-9\s]/g, ""))}
               />
               <button 
                 type="submit"
                 disabled={isSearching}
-                className="ml-2 p-2 bg-primary rounded-lg text-white shadow-lg hover:scale-105 active:scale-95 transition-all disabled:opacity-50"
+                className="p-3 bg-primary rounded-xl text-white shadow-lg hover:scale-105 active:scale-95 transition-all disabled:opacity-50 flex items-center justify-center shrink-0"
               >
                 {isSearching ? <Loader2 className="w-4 h-4 animate-spin" /> : <ChevronRight className="w-4 h-4" />}
               </button>
@@ -267,9 +266,9 @@ export default function Sidebar({
                  <button 
                    key={t.label}
                    onClick={() => handleSearch(t.query)}
-                   className="px-4 py-2 btn-secondary text-[9px] whitespace-nowrap flex items-center gap-2 group"
+                   className="px-4 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-[9px] font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-all group"
                  >
-                   <Zap className="w-3 h-3 text-primary group-hover:scale-110 transition-transform" /> {t.label}
+                   <Zap className="w-2.5 h-2.5 text-primary group-hover:scale-110 transition-transform" /> {t.label}
                  </button>
                ))}
             </div>
@@ -282,8 +281,8 @@ export default function Sidebar({
           <div className="px-10 pt-8 pb-32 space-y-10">
             {/* DISCOVERY FEED - MOVED TO TOP */}
             <div className="p-6 bg-white/[0.03] border border-white/10 rounded-[2rem] backdrop-blur-3xl relative">
-              <div className="flex items-center gap-3 mb-4">
-                 <div className="w-2 h-2 bg-primary rounded-full animate-ping shadow-[0_0_10px_#00b14f]" />
+              <div className="flex flex-row items-center gap-3 mb-4">
+                 <div className="w-2 h-2 bg-primary rounded-full animate-ping shadow-[0_0_10px_#00b14f] shrink-0" />
                  <span className="text-[10px] font-black text-white uppercase tracking-[0.3em]">Discovery</span>
               </div>
               <div className="h-[90px] relative">
@@ -340,18 +339,18 @@ export default function Sidebar({
 
                     {/* INTELLIGENCE STATS LAYER */}
                     {stats && (
-                      <div className="flex flex-row items-center justify-between p-6 glass-card border-white/5 bg-white/[0.02] divide-x divide-white/5">
+                      <div className="grid grid-cols-3 glass-card border-white/5 bg-white/[0.02] overflow-hidden">
                         {[
                           { label: 'Food', value: stats.food, icon: Flame, color: 'text-orange-500' },
                           { label: 'Deep Work', value: stats.cafes, icon: Clock, color: 'text-primary' },
                           { label: 'Innov.', value: stats.hubs, icon: Zap, color: 'text-amber-500' }
-                        ].map(stat => (
-                          <div key={stat.label} className="flex-1 flex flex-col items-center gap-1 px-2">
-                             <div className={`flex items-center gap-2 ${stat.color}`}>
+                        ].map((stat, idx) => (
+                          <div key={stat.label} className={`flex flex-col items-center justify-center p-3 gap-1 ${idx < 2 ? 'border-r border-white/5' : ''}`}>
+                             <div className={`flex items-center gap-1.5 ${stat.color}`}>
                                <stat.icon className="w-3 h-3" />
-                               <span className="text-sm font-black">{stat.value}</span>
+                               <span className="text-xs font-black">{stat.value}</span>
                              </div>
-                             <span className="text-[7px] font-black text-white/30 uppercase tracking-widest text-center">{stat.label}</span>
+                             <span className="text-[8px] font-black text-white/20 uppercase tracking-tighter">{stat.label}</span>
                           </div>
                         ))}
                       </div>

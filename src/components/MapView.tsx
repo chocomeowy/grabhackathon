@@ -153,14 +153,25 @@ export default function MapView({ center }: { center?: [number, number] | null }
 
       {/* Loading Overlay - Only show if not loaded */}
       {!isLoaded && !error && (
-        <div className="absolute inset-0 z-20 bg-[#0a0a0a] flex flex-col items-center justify-center gap-8">
-          <div className="w-20 h-20 border-2 border-primary/10 border-t-primary rounded-full animate-spin" />
-          <div className="text-center">
+        <div className="absolute inset-0 z-20 bg-[#0a0f1a] flex flex-col items-center justify-center gap-8">
+          <div className="relative">
+            <div className="w-24 h-24 border-2 border-primary/20 border-t-primary rounded-full animate-spin" />
+            <MapPin className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 text-primary animate-bounce" />
+          </div>
+          <div className="text-center space-y-4">
             <h3 className="text-2xl font-black text-white tracking-tighter uppercase italic">PulseMap</h3>
-            <div className="flex items-center gap-2 mt-2 justify-center">
+            <div className="flex items-center gap-2 justify-center">
                <RefreshCw className="w-3 h-3 text-primary animate-spin" />
-               <p className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.4em]">Establishing Link</p>
+               <p className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.4em]">Linking Neural Grid</p>
             </div>
+            
+            {/* Last Resort Retry Button - Appears after 10s of nothingness */}
+            <button 
+              onClick={() => window.location.reload()}
+              className="mt-8 px-6 py-3 bg-white/5 border border-white/10 rounded-full text-[8px] font-black uppercase text-white/40 hover:text-white transition-all animate-pulse"
+            >
+              Manual Sync Overload
+            </button>
           </div>
         </div>
       )}

@@ -227,8 +227,8 @@ export default function Sidebar({
         onClick={onToggleCollapse}
         className={`absolute z-50 bg-primary rounded-full flex items-center justify-center text-white shadow-[0_0_20px_rgba(0,177,79,0.4)] transition-all hover:scale-110 active:scale-90
           md:-right-5 md:top-1/2 md:-translate-y-1/2 md:w-10 md:h-10
-          max-md:left-1/2 max-md:-translate-x-1/2 max-md:-top-5 max-md:w-12 max-md:h-12
-          ${isCollapsed ? 'md:rotate-180 md:-right-12 max-md:rotate-90 max-md:top-auto max-md:-bottom-5' : 'max-md:-rotate-90'}`}
+          max-md:right-4 max-md:top-4 max-md:w-10 max-md:h-10
+          ${isCollapsed ? 'md:rotate-180 md:-right-12 max-md:rotate-90' : 'max-md:-rotate-90'}`}
       >
         <ChevronLeft className="w-6 h-6" />
       </button>
@@ -310,8 +310,8 @@ export default function Sidebar({
         <div className="sidebar-content-scroll custom-scrollbar">
           <div className="px-10 pt-8 pb-32 space-y-10">
             {/* DISCOVERY FEED - MOVED TO TOP */}
-            <div className="p-8 pt-10 bg-white/[0.03] border border-white/10 rounded-[2.5rem] backdrop-blur-3xl relative overflow-hidden">
-              <div className="flex flex-row items-center gap-3 mb-4">
+            <div className="p-8 bg-white/[0.03] border border-white/10 rounded-[2.5rem] backdrop-blur-3xl relative overflow-hidden flex flex-col gap-6">
+              <div className="flex flex-row items-center gap-3">
                  <div className="w-2 h-2 bg-primary rounded-full animate-ping shadow-[0_0_10px_#00b14f] shrink-0" />
                  <span className="text-[10px] font-black text-white uppercase tracking-[0.3em]">Discovery</span>
               </div>

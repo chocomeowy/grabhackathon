@@ -38,6 +38,7 @@ export default function Sidebar({
   onMapSourceChange: (source: 'grab' | 'osm' | 'onemap') => void,
   origin: [number, number]
 }) {
+  const inputRef = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
   const [transportMode, setTransportMode] = useState<TransportMode>('driving');
@@ -147,6 +148,11 @@ export default function Sidebar({
     if (!searchTerms) return;
 
     if (forcedQuery) setQuery(forcedQuery);
+    
+    // Dismiss keyboard on mobile
+    if (inputRef.current) {
+      inputRef.current.blur();
+    }
 
     setIsSearching(true);
     setErrorDetails(null);
@@ -249,6 +255,7 @@ export default function Sidebar({
                 <Search className={`w-5 h-5 transition-colors ${isSearching ? 'text-primary' : 'text-muted-foreground'}`} />
               </div>
               <input 
+                ref={inputRef}
                 type="text" 
                 placeholder="Where's the vibe?" 
                 className="bg-transparent border-none focus:ring-0 flex-1 py-3 text-base font-medium placeholder:text-white/20"

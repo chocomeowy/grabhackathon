@@ -34,7 +34,8 @@ export default function Sidebar({
   isCollapsed: boolean,
   onToggleCollapse: () => void,
   mapSource: 'grab' | 'osm' | 'onemap',
-  onMapSourceChange: (source: 'grab' | 'osm' | 'onemap') => void
+  onMapSourceChange: (source: 'grab' | 'osm' | 'onemap') => void,
+  origin: [number, number]
 }) {
   const [query, setQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
@@ -70,6 +71,31 @@ export default function Sidebar({
     
     return { food, cafes, hubs, total: pois.length };
   }, [pois]);
+
+  const calculateDistance = (p1: [number, number], p2: [number, number]) => {
+    const R = 6371; // km
+    const dLat = (p2[1] - p1[1]) * Math.PI / 180;
+    const dLon = (p2[0] - p1[0]) * Math.PI / 180;
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+              Math.cos(p1[1] * Math.PI / 180) * Math.cos(p2[1] * Math.PI / 180) *
+              Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  };
+
+  const getTravelInfo = (dest: {lat: number, lng: number}) => {
+    const d = calculateDistance(origin, [dest.lng, dest.lat]);
+    let speed = 35; // avg city speed driving
+    if (transportMode === 'walking') speed = 5;
+    if (transportMode === 'mrt') speed = 25;
+    
+    const time = Math.round((d / speed) * 60) + 1;
+    const distMeters = Math.round(d * 1000);
+    return {
+      time: time < 1 ? '< 1 min' : `${time} min`,
+      distance: distMeters < 1000 ? `${distMeters}m` : `${(distMeters/1000).toFixed(1)}km`
+    };
+  };
 
   const discoveryItems = useMemo(() => {
     const base = [
@@ -397,7 +423,7 @@ export default function Sidebar({
                            <POICard 
                             key={poi.poi_id} 
                             poi={poi} 
-                            isExpanded={selectedPoiId === poi.poi_id}
+                            isExpanded={selectedPoiId === poi.poi_id} travelInfo={getTravelInfo({ lat: poi.location.latitude, lng: poi.location.longitude })}
                             onClick={() => {
                                setSelectedPoiId(selectedPoiId === poi.poi_id ? null : poi.poi_id);
                                if (onPoiSelect) onPoiSelect(poi.location.latitude, poi.location.longitude);
@@ -445,7 +471,12 @@ export default function Sidebar({
 }
 
 
-function POICard({ poi, isExpanded, onClick }: { poi: any, isExpanded: boolean, onClick: () => void }) {
+function POICard({ poi, isExpanded, onClick, travelInfo }: { 
+  poi: any, 
+  isExpanded: boolean, 
+  onClick: () => void,
+  travelInfo: { time: string, distance: string }
+}) {
   return (
     <motion.div 
       layout
@@ -524,9 +555,9 @@ function POICard({ poi, isExpanded, onClick }: { poi: any, isExpanded: boolean, 
             
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-white/5 p-4 rounded-2xl border border-white/5">
-                 <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest block mb-2">Distance</span>
+                 <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest block mb-2">Navigation</span>
                  <div className="text-xs font-black text-white flex items-center gap-2">
-                   <Footprints className="w-4 h-4 text-primary" /> {poi.walking_time}m walk
+                   <Footprints className="w-4 h-4 text-primary" /> {travelInfo.time} ({travelInfo.distance})
                  </div>
               </div>
               <div className="bg-white/5 p-4 rounded-2xl border border-white/5">
@@ -569,11 +600,11 @@ function POICard({ poi, isExpanded, onClick }: { poi: any, isExpanded: boolean, 
            <div className="flex items-center gap-4">
              <div className="flex items-center gap-1 text-primary">
                <Clock className="w-3 h-3" />
-               <span>{poi.walking_time} min</span>
+               <span>{travelInfo.time}</span>
              </div>
              <div className="flex items-center gap-1">
                <MapPin className="w-3 h-3" />
-               <span>{poi.distance_meters}m</span>
+               <span>{travelInfo.distance}</span>
              </div>
            </div>
            <ArrowUpRight className="w-3.5 h-3.5 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />

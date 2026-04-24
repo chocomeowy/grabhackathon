@@ -36,15 +36,18 @@ const getOneMapStyle = (token: string) => ({
 
 const GRAB_STYLE = '/api/map/style';
 
-export default function MapView({ center, poiLocation, source = 'grab' }: {
+export default function MapView({ center, poiLocation, source = 'grab', origin, onOriginChange }: {
   center?: [number, number] | null,
   poiLocation?: [number, number] | null,
-  source?: MapSource
+  source?: MapSource,
+  origin: [number, number],
+  onOriginChange: (pos: [number, number]) => void
 }) {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstance = useRef<maplibregl.Map | null>(null);
   const markerInstance = useRef<maplibregl.Marker | null>(null);
   const poiMarkerRef = useRef<maplibregl.Marker | null>(null);
+  const originMarkerRef = useRef<maplibregl.Marker | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [currentSource, setCurrentSource] = useState<MapSource>(source);
@@ -153,6 +156,28 @@ export default function MapView({ center, poiLocation, source = 'grab' }: {
         }
       }
 
+      // Update Origin Marker (The Anchor)
+      if (origin) {
+        if (!originMarkerRef.current) {
+          const el = document.createElement('div');
+          el.className = 'pulse-marker origin-pulse';
+          el.style.backgroundColor = '#0066ff'; // Blue for anchor
+          el.style.boxShadow = '0 0 20px rgba(0, 102, 255, 0.6)';
+          el.style.cursor = 'grab';
+          
+          originMarkerRef.current = new maplibregl.Marker({ element: el, draggable: true })
+            .setLngLat(origin)
+            .addTo(map);
+
+          originMarkerRef.current.on('dragend', () => {
+            const lngLat = originMarkerRef.current?.getLngLat();
+            if (lngLat) onOriginChange([lngLat.lng, lngLat.lat]);
+          });
+        } else {
+          originMarkerRef.current.setLngLat(origin);
+        }
+      }
+
       // Update Selected POI
       if (poiLocation) {
         if (poiMarkerRef.current) poiMarkerRef.current.remove();
@@ -163,26 +188,24 @@ export default function MapView({ center, poiLocation, source = 'grab' }: {
           .setLngLat(poiLocation)
           .addTo(map);
 
-        // Draw Line between center and POI
-        if (center) {
-          const pathSource = map.getSource('pulse-path') as any;
-          if (pathSource) {
-            pathSource.setData({
-              type: 'Feature',
-              geometry: {
-                type: 'LineString',
-                coordinates: [center, poiLocation]
-              },
-              properties: {}
-            });
-          }
-
-          // Fit both in view
-          const bounds = new maplibregl.LngLatBounds();
-          bounds.extend(center);
-          bounds.extend(poiLocation);
-          map.fitBounds(bounds, { padding: 150, speed: 1.2 });
+        // Draw Line between Origin and POI
+        const pathSource = map.getSource('pulse-path') as any;
+        if (pathSource) {
+          pathSource.setData({
+            type: 'Feature',
+            geometry: {
+              type: 'LineString',
+              coordinates: [origin, poiLocation]
+            },
+            properties: {}
+          });
         }
+
+        // Fit both in view
+        const bounds = new maplibregl.LngLatBounds();
+        bounds.extend(origin);
+        bounds.extend(poiLocation);
+        map.fitBounds(bounds, { padding: 150, speed: 1.2 });
       } else {
         // Clear Path and POI Marker
         if (poiMarkerRef.current) poiMarkerRef.current.remove();
@@ -192,7 +215,7 @@ export default function MapView({ center, poiLocation, source = 'grab' }: {
         }
       }
     }
-  }, [center, poiLocation, isLoaded]);
+  }, [center, poiLocation, origin, isLoaded]);
 
   return (
     <div

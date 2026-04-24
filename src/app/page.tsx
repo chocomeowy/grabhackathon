@@ -12,6 +12,7 @@ export default function Home() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [mapSource, setMapSource] = useState<'grab' | 'osm' | 'onemap'>('grab');
   const [isMobile, setIsMobile] = useState(false);
+  const [origin, setOrigin] = useState<[number, number]>([103.8519, 1.2902]); // Default: City Hall
 
   React.useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -48,12 +49,19 @@ export default function Home() {
           onToggleCollapse={() => setIsCollapsed(!isCollapsed)} 
           mapSource={mapSource}
           onMapSourceChange={setMapSource}
+          origin={origin}
         />
       </div>
 
       {/* Main Map Experience */}
       <div className="map-wrapper relative flex-1">
-        <MapView center={mapCenter} poiLocation={poiLocation} source={mapSource} />
+        <MapView 
+          center={mapCenter} 
+          poiLocation={poiLocation} 
+          source={mapSource} 
+          origin={origin}
+          onOriginChange={setOrigin}
+        />
       </div>
     </main>
   );

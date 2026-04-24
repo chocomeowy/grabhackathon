@@ -17,7 +17,7 @@ export async function GET(request: Request) {
     const url = new URL('https://maps.grab.com/api/v1/maps/place/v2/nearby');
     url.searchParams.set('location', `${lat},${lng}`);
     url.searchParams.set('radius', '5'); // 5km radius
-    url.searchParams.set('limit', '20');
+    url.searchParams.set('limit', '50'); // Maximum discovery depth
 
     const response = await fetch(url.toString(), {
       headers: {

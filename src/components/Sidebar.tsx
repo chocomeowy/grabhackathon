@@ -342,9 +342,23 @@ function POICard({ poi, isExpanded, onClick }: { poi: any, isExpanded: boolean, 
             </div>
 
             <div className="p-4 bg-primary/5 rounded-2xl border border-primary/10">
-               <p className="text-[9px] font-bold text-white/60 leading-normal">
-                 This spot is trending in the last 2 hours. Recommended for those seeking a <span className="text-primary">unique local experience</span>.
-               </p>
+               <span className="text-[8px] font-black text-primary uppercase tracking-[0.3em] block mb-2">Pulse Breakdown</span>
+               <div className="space-y-3">
+                 <p className="text-[9px] font-bold text-white/60 leading-normal">
+                   This spot is trending in the last 2 hours. Recommended for those seeking a <span className="text-primary">unique local experience</span>.
+                 </p>
+                 <div className="flex gap-1.5 h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                    <div className="h-full bg-primary/20 w-[10%]" />
+                    <div className="h-full bg-primary/40 w-[20%]" />
+                    <div className="h-full bg-primary/80 w-[40%]" />
+                    <div className="h-full bg-primary w-[30%]" />
+                 </div>
+                 <div className="flex justify-between text-[7px] font-black text-white/30 uppercase tracking-tighter">
+                    <span>Morning</span>
+                    <span>Noon</span>
+                    <span className="text-primary">Peak Now</span>
+                 </div>
+               </div>
             </div>
 
             <button className="w-full py-4 bg-primary rounded-2xl text-[10px] font-black uppercase tracking-widest text-white shadow-xl shadow-primary/20 flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all">

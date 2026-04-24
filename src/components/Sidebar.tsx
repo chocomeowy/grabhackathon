@@ -232,7 +232,7 @@ export default function Sidebar({
               <button 
                 key={src.id}
                 onClick={() => onMapSourceChange(src.id as any)}
-                className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest border transition-all ${mapSource === src.id ? 'bg-primary text-white border-primary shadow-[0_0_15px_rgba(0,177,79,0.4)]' : 'bg-white/5 text-white/30 border-white/10 hover:border-white/20'}`}
+                className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest border transition-all ${mapSource === src.id ? 'bg-primary text-white border-primary shadow-[0_0_15px_rgba(0,177,79,0.4)]' : 'bg-white/5 text-white border-white/10 hover:border-white/20'}`}
               >
                 {src.label}
               </button>
@@ -247,7 +247,7 @@ export default function Sidebar({
               <input 
                 type="text" 
                 placeholder="Where's the vibe?" 
-                className="bg-transparent border-none focus:ring-0 flex-1 py-3 text-base font-medium text-white placeholder:text-white/20"
+                className="bg-transparent border-none focus:ring-0 flex-1 py-3 text-base font-medium text-white !text-white placeholder:text-white/20"
                 value={query}
                 onChange={(e) => setQuery(e.target.value.replace(/[^a-zA-Z0-9\s]/g, ""))}
               />
@@ -266,7 +266,7 @@ export default function Sidebar({
                  <button 
                    key={t.label}
                    onClick={() => handleSearch(t.query)}
-                   className="px-4 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-[9px] font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-all group"
+                   className="px-4 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-[9px] font-black text-white uppercase tracking-widest flex items-center justify-center gap-2 transition-all group"
                  >
                    <Zap className="w-2.5 h-2.5 text-primary group-hover:scale-110 transition-transform" /> {t.label}
                  </button>
@@ -293,7 +293,7 @@ export default function Sidebar({
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.5 }}
-                    className="flex items-start gap-3 p-2 absolute inset-0"
+                    className="flex items-start gap-4 absolute inset-0"
                   >
                      <div className="mt-0.5 shrink-0">{discoveryItems[activeDiscoveryIndex]?.icon}</div>
                      <div>

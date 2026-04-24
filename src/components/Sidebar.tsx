@@ -423,10 +423,13 @@ function POICard({ poi, isExpanded, onClick }: { poi: any, isExpanded: boolean, 
           </div>
           <p className="text-[10px] font-bold text-muted-foreground truncate">
             {(() => {
+              const nameClean = poi.name.toLowerCase().replace(/[^a-z0-9]/g, '');
+              const addrClean = (poi.formatted_address || "").toLowerCase().replace(/[^a-z0-9]/g, '');
               const name = poi.name.trim();
               const addr = poi.formatted_address || "";
-              if (addr.toLowerCase().startsWith(name.toLowerCase())) {
-                return addr.substring(name.length).replace(/^[, ]+/, "");
+              
+              if (addrClean.startsWith(nameClean)) {
+                return addr.substring(name.length).replace(/^[, \-\/]+/, "");
               }
               return addr;
             })()}
@@ -456,7 +459,7 @@ function POICard({ poi, isExpanded, onClick }: { poi: any, isExpanded: boolean, 
             {/* HERO IMAGE FOR EXPANDED VIEW */}
             {poi.photo_url && (
               <div className="w-full h-40 rounded-2xl overflow-hidden border border-white/10 relative">
-                 <img src={poi.photo_url} alt={poi.name} className="w-full h-full object-cover" />
+                 <img src={poi.photo_url} alt="Location Intelligence" className="w-full h-full object-cover" />
                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-4">
                     <span className="text-[10px] font-black text-white uppercase tracking-widest">Verified Intelligence</span>
                  </div>

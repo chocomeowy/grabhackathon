@@ -311,7 +311,7 @@ export default function Sidebar({
         <div className="sidebar-content-scroll custom-scrollbar">
           <div className="px-10 pt-8 pb-32 space-y-10">
             {/* DISCOVERY FEED - MOVED TO TOP */}
-            <div className="p-8 bg-white/[0.03] border border-white/10 rounded-[2.5rem] backdrop-blur-3xl relative overflow-hidden flex flex-col gap-6">
+            <div className="p-8 pt-10 bg-white/[0.03] border border-white/10 rounded-2xl backdrop-blur-3xl relative overflow-hidden flex flex-col gap-6">
               <div className="flex flex-row items-center gap-3">
                  <div className="w-2 h-2 bg-primary rounded-full animate-ping shadow-[0_0_10px_#00b14f] shrink-0" />
                  <span className="text-[10px] font-black text-white uppercase tracking-[0.3em]">Discovery</span>

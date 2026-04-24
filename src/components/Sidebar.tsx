@@ -554,6 +554,7 @@ function POICard({ poi, isExpanded, onClick, travelInfo }: {
               <p className="text-sm text-white/90 font-medium leading-relaxed italic">"{poi.desc}"</p>
             </div>
             
+            <div className="grid grid-cols-2 gap-4">
               <div className="bg-white/5 p-4 rounded-2xl border border-white/5">
                  <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest block mb-2">Navigation</span>
                  <div className="text-sm font-black text-white flex items-center gap-2">
